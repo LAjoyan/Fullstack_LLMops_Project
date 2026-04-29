@@ -18,30 +18,17 @@ class Article(LanceModel):
 
 class Prompt(BaseModel):
     prompt: str = Field(
-        description="prompt from user, if empty consider prompt as missing"
+        description="The input question from the user. Treat empty strings as missing input."
     )
 
 
 class RagResponse(BaseModel):
     filename: str | None = Field(
-        default=None, description="filename of the retrieved file without suffix"
+        default=None, description="Name of the source document without the file extension."
     )
     filepath: str | None = Field(
-        default=None, description="absolute path to the retrieved file"
+        default=None, description="The full absolute path to the local source file."
     )
     answer: str | None = Field(
-        description="answer based on the retrieved file, concise but captures essential meaning"
+        description="The generated AI response based on the retrieved context. Should be accurate and concise."
     )
-
-
-
-
-
-
-
-
-
-
-
-
-
