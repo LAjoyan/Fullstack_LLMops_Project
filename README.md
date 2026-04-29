@@ -94,3 +94,24 @@ OPENROUTER_API_KEY=your_key_here
 COHERE_API_KEY=your_key_here
 ```
 
+## 🌿 Branching Strategy
+
+We use a simple branching workflow to collaborate on the project.
+
+- `main` → stable version of the project
+- separate branches → used by each team member for development
+
+Each team member works on their own branch. Changes are reviewed and tested before being merged into the `main` branch.
+
+All changes are merged through pull requests.
+
+## 🤝 Collaboration
+This project is developed collaboratively by a team of four students. Each member works on separate branches to ensure structured collaboration and clear version control.
+
+### Team Members
+
+- [Lilit Ajoyan](https://www.linkedin.com/in/lilit-ajoyan-1565b4183/)
+- [Josefin Lesley](https://www.linkedin.com/in/josefin-l-490ab038b/)
+- [Erfan Tahmasebi](https://www.linkedin.com/in/erfan-tahmasebi-b41276290/)
+- [Leo Lindqvist](https://www.linkedin.com/in/leo-lindqvist-kr%C3%B6hnert-bb0a2b1b5/)
+
