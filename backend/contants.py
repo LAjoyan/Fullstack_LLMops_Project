@@ -1,7 +1,7 @@
 from pathlib import Path
 
-BASE_DIR = Path(__file__).parents
+ROOT_PATH = Path(__file__).parents[1]
+DATA_PATH = ROOT_PATH / "data"
 
 MODEL="openrouter:openai/gpt-4.1-nano"
-
-# Need to add VECTOR_DB_PATH
+EMBEDDING_MODEL = "embed-multilingual-light-v3.0"
