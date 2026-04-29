@@ -59,3 +59,38 @@ This approach allows:
 
 The root `pyproject.toml` only contains general project metadata and does not manage dependencies.
 
+## 🔄 Planned System Workflow (RAG Pipeline)
+
+1. **Data Ingestion**
+   - Lecture transcripts are stored in the `data/` folder
+   - The ingestion script prepares and initializes the vector database
+
+2. **Vector Storage**
+   - Text is embedded using a multilingual embedding model
+   - Embeddings are stored in LanceDB for similarity search
+
+3. **User Query**
+   - The user submits a question through the frontend interface
+
+4. **Retrieval**
+   - Relevant text chunks are retrieved from the vector database
+
+5. **Generation**
+   - The LLM (via OpenRouter) generates an answer using the retrieved context
+
+6. **Output**
+   - The system returns the answer along with its source
+
+## 🚀 Installation & Setup (In Progress)
+
+Detailed setup instructions will be added as the project is completed.
+
+## 🔐 Environment Variables
+
+Create a `.env` file and add your API key:
+
+```
+OPENROUTER_API_KEY=your_key_here
+COHERE_API_KEY=your_key_here
+```
+
