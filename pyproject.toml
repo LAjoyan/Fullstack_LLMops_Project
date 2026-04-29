@@ -1,7 +1,7 @@
 [project]
-name = "fullstack-llmops-project-1"
+name = "fullstack-llmops-project"
 version = "0.1.0"
-description = "Add your description here"
+description = "Fullstack project with RAG"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
