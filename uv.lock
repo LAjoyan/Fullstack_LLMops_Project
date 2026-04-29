@@ -33,7 +33,7 @@ wheels = [
 ]
 
 [[package]]
-name = "fullstack-llmops-project-1"
+name = "fullstack-llmops-project"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
