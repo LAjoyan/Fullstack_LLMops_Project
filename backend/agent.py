@@ -5,7 +5,14 @@ from backend.constants import MODEL
 
 vector_db = lancedb.connect(uri="./vector_db")
 
-best_agent = Agent(
+rag_agent = Agent(
     model = MODEL,
     system_prompt = "You are a expert reader and doing quizes and summarize youtube subtitle files"
 )
+
+@rag_agent.tool_plain 
+def retrieve_documents(query: str, k: int=3) -> str:
+    results = vector_db["articles"].search(query=query).limit(k).to_list()
+
+    if not results:
+        return "no documents found."
