@@ -1,0 +1,9 @@
+[project]
+name = "frontend"
+version = "0.1.0"
+description = "Frontend for Studdy Buddy RAG llmops project"
+requires-python = ">=3.13"
+
+dependencies = [
+    "streamlit"
+]
