@@ -115,3 +115,11 @@ This project is developed collaboratively by a team of four students. Each membe
 - [Erfan Tahmasebi](https://www.linkedin.com/in/erfan-tahmasebi-b41276290/)
 - [Leo Lindqvist](https://www.linkedin.com/in/leo-lindqvist-kr%C3%B6hnert-bb0a2b1b5/)
 
+## 📊 Future Improvements
+- MLflow integration for monitoring
+- Improved UI in Streamlit
+- Quiz generation from lecture content
+- Better retrieval ranking
+
+## ✅ Status
+🚧 In progress – core system implemented, additional features under development
