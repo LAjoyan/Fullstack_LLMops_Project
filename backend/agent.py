@@ -68,3 +68,35 @@ def generate_quiz(user_query: str, k: int = 3) -> str:
     """
 
     return rag_agent.model(prompt)
+
+
+@rag_agent.tool_plain
+def generate_flashcards(user_query: str, k: int = 3) -> str:
+
+    topic = user_query.lower().replace("flashcards", "").strip()
+    if not topic:
+        topic = "machine learning"
+
+    results = vector_db["LectureTranscript"].search(query=topic).limit(k).to_list()
+
+    if not results:
+        return "No relevant content found."
+
+    context = "\n\n".join([doc["content"] for doc in results])
+
+    prompt = f"""
+Create study flashcards based ONLY on this content:
+
+{context}
+
+Format:
+Q: question
+A: short clear answer
+
+Rules:
+- Keep answers concise
+- Focus on key concepts
+- Avoid duplicates
+"""
+
+    return rag_agent.model(prompt)
