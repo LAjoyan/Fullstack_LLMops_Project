@@ -1,10 +1,10 @@
 from pydantic_ai import Agent
 from pydantic_ai.usage import UsageLimits
 import lancedb
-from backend.constants import MODEL
+from backend.constants import MODEL, VECTOR_DB_PATH
 import re
 
-vector_db = lancedb.connect(uri="./vector_db")
+vector_db = lancedb.connect(uri=VECTOR_DB_PATH)
 
 rag_agent = Agent(
     model=MODEL,
