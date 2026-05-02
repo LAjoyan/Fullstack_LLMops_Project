@@ -1,12 +1,10 @@
 from fastapi import FastAPI
-import constants
 from data_models import Prompt, RagResponse
-from agents import bot_answer
-from middleware import logging_middleware
+from agent import bot_answer  
+
 
 app = FastAPI()
 
-logging_middleware(app=app)
 
 @app.get("/")
 async def status():
@@ -15,4 +13,4 @@ async def status():
 @app.post("/rag/query")
 async def query_documentation(query: Prompt) -> RagResponse:
     result = await bot_answer(query.prompt)
-    return resultv
+    return result  
