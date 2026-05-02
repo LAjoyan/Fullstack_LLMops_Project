@@ -3,6 +3,8 @@ from pydantic_ai.usage import UsageLimits
 import lancedb
 from backend.constants import MODEL, VECTOR_DB_PATH
 import re
+from backend.data_models import RagResponse
+
 
 vector_db = lancedb.connect(uri=VECTOR_DB_PATH)
 
@@ -18,6 +20,7 @@ You can:
 
 Use the appropriate tool based on the user request.
 """,
+    output_type=RagResponse,
 )
 
 
