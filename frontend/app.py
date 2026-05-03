@@ -5,8 +5,8 @@ import os
 API_URL = os.getenv("API_URL", "http://localhost:8000/rag/query")
 
 def layout():
-    st.markdown("# RAGproject")
-    st.markdown("Ask a question about different projects and get an answer!")
+    st.markdown("#  Study buddy with LLM")
+    st.markdown("Ask a question about LLM projects and get an answer!")
 
     text_input = st.text_input(label="ask a question")
 
