@@ -12,4 +12,4 @@ def register_system_prompt(**kwargs):
         register_prompt(name=filename, template=prompt, **kwargs)
 
 if __name__ == "__main__":
-    register_system_prompt()
+    register_system_prompt() 
