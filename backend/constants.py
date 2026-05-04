@@ -10,9 +10,11 @@ PROMPTS_PATH = ROOT_PATH / "prompt_engineering"
 
 VECTOR_DB_PATH = ROOT_PATH / "knowledge_base"
 
+MONITORING_PATH = Path(__file__).parents[1] / "monitoring"
+
 MODEL = "openrouter:openai/gpt-4.1-nano"
 EMBEDDING_MODEL = "embed-multilingual-light-v3.0"
 
 MLFLOW_DB = os.getenv("MLFLOW_TRACKING_URI", "http://localhost:5001/")
 
-mlflow.set_track
+mlflow.set_tracking_uri(f"sqlite:///{MONITORING_PATH / 'mlflow.db'}")
