@@ -1,7 +1,7 @@
 [project]
 name = "frontend"
 version = "0.1.0"
-description = "Frontend for Studdy Buddy RAG llmops project"
+description = "Frontend for the Study Buddy RAG LLMOps Project"
 requires-python = ">=3.13"
 
 dependencies = [
