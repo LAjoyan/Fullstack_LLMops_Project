@@ -3,7 +3,7 @@ FROM python:3.13-slim
 WORKDIR /app
 
 COPY backend backend
-COPY knowledge_base knowledge_base #change if not called knowledge_base
+COPY lancedb lancedb
 
 ENV PYTHONPATH=/app
 
