@@ -20,7 +20,7 @@ def import_files_to_db(table):
     md_files = list(DATA_PATH.glob("*.md"))
     
     if not md_files:
-        print("Hittade inga .md-filer i data-mappen!")
+        print("Found no .md files in the data folder!")
         return
 
     for file in md_files:
@@ -37,9 +37,9 @@ def import_files_to_db(table):
             "filepath": str(file), 
             "content": content
         }]) 
-        print(f"✅ Lade till '{document_name}' i databasen!")
+        print(f"Added ‘{document_name}’ to the database!")
 
-    print("\nFiler i databasen just nu:")
+    print("Files in the database right now:")
     print(table.to_pandas()["document_name"]) 
 
 if __name__ == "__main__":      
