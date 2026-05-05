@@ -5,7 +5,6 @@ from backend.constants import DATA_PATH, VECTOR_DB_PATH
 
 from backend.data_models import LectureTranscript
 
-VECTOR_DB_PATH = DATA_PATH / "lancedb"
 
 def setup_vector_db(path):
 
