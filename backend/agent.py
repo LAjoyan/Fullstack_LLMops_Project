@@ -2,12 +2,13 @@ from pydantic_ai import Agent
 import lancedb
 from backend.constants import MODEL, VECTOR_DB_PATH
 from backend.data_models import RagResponse
+from mlflow.genai import load_prompt
 
 vector_db = lancedb.connect(uri=VECTOR_DB_PATH)
 
 rag_agent = Agent(
     model=MODEL,
-    system_prompt="You are an expert reader. Answer questions and summarize based on the retrieved documents.",
+    system_prompt=load_prompt(), # TODO: Add rag_agent_system_prompt as a parameter
     output_type=RagResponse, 
 )
 
