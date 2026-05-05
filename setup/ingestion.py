@@ -24,7 +24,7 @@ def import_files_to_db(table):
         return
 
     for file in md_files:
-        # Öppnar filen och tvingar utf-8 för å, ä, ö
+        # Opens the file and forces UTF‑8 for å, ä, ö
         with open(file, encoding="utf-8") as f:
             content = f.read()
 
