@@ -1,8 +1,7 @@
 import lancedb
 from pathlib import Path
-
 from backend.constants import DATA_PATH, VECTOR_DB_PATH
-
+from backend.constants import DATA_PATH
 from backend.data_models import LectureTranscript
 
 
@@ -14,6 +13,7 @@ def setup_vector_db(path):
     
     table = vector_db.create_table("LectureTranscript", schema=LectureTranscript, exist_ok=True)
     return vector_db, table
+
 
 def import_files_to_db(table):
     # Letar upp alla Markdown-filer
@@ -28,6 +28,7 @@ def import_files_to_db(table):
         with open(file, encoding="utf-8") as f:
             content = f.read()
 
+
         document_name = file.name
         
         table.delete(f"document_name = '{document_name}'") 
@@ -41,6 +42,25 @@ def import_files_to_db(table):
 
     print("Files in the database right now:")
     print(table.to_pandas()["document_name"]) 
+
+
+        document_name = file.name
+        
+        table.delete(f"document_name = '{document_name}'") 
+
+        table.add([{
+            "document_name": document_name, 
+            "filepath": str(file), 
+            "content": content
+        }]) 
+        print(f"Added ‘{document_name}’ to the database!")
+
+    print("Files in the database right now:")
+    print(table.to_pandas()["document_name"]) 
+
+    if __name__ == "__main__":
+    vector_db = setup_vector_db(VECTOR_DB_PATH)
+    ingest_docs_to_vector_db(vector_db["LectureTranscript"])
 
 if __name__ == "__main__":      
     vector_db, table = setup_vector_db(VECTOR_DB_PATH)
