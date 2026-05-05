@@ -5,6 +5,6 @@ description = "Fullstack project with RAG"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "lancedb>=0.30.2",
-    "mlflow>=3.11.1",
+    "backend",
+    "frontend",
 ]
