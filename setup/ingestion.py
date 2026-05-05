@@ -2,8 +2,6 @@ import lancedb
 from pathlib import Path
 from dotenv import load_dotenv
 
-load_dotenv() 
-
 from backend.constants import DATA_PATH, VECTOR_DB_PATH
 
 from backend.data_models import LectureTranscript
