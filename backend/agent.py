@@ -1,6 +1,3 @@
-
-from dotenv import load_dotenv
-load_dotenv() 
 from pydantic_ai import Agent
 import lancedb
 from backend.constants import MODEL, VECTOR_DB_PATH
