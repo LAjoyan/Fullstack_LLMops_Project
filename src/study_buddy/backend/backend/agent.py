@@ -8,18 +8,18 @@ vector_db = lancedb.connect(uri=VECTOR_DB_PATH)
 
 rag_agent = Agent(
     model=MODEL,
-    system_prompt=load_prompt(), # TODO: Add rag_agent_system_prompt as a parameter
-    output_type=RagResponse, 
+    system_prompt=load_prompt(),
+    output_type=RagResponse,
 )
 
-@rag_agent.tool_plain 
+@rag_agent.tool_plain
 def retrieve_documents(query: str, k: int=3) -> str:
     results = vector_db["LectureTranscript"].search(query=query).limit(k).to_list()
 
     if not results:
         return "No documents found."
-        
-   
+
+
     return "\n\n".join(
         f"Filename: {doc.get('document_name', 'Unknown').replace('.md', '')}\n"
         f"Filepath: {doc.get('filepath', 'Unknown')}\n"
