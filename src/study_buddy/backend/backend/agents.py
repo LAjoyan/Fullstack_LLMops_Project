@@ -38,7 +38,7 @@ def retrieve_documents(query: str, k: int = 3) -> str:
 
 
 @rag_agent.tool_plain
-def generate_quiz(user_query: str, k: int = 3) -> str:
+def generate_quiz(user_query: str, k: int = 2) -> str:
 
     # 1. Extract number of questions (default = 5)
     match = re.search(r"\d+", user_query)
@@ -56,7 +56,7 @@ def generate_quiz(user_query: str, k: int = 3) -> str:
         return "No relevant content found."
 
     # 4. Combine context
-    context = "\n\n".join([doc["content"] for doc in results])
+    context = "\n\n".join([doc["content"][:800] for doc in results])
 
     # 5. Prompt
     prompt = f"""
