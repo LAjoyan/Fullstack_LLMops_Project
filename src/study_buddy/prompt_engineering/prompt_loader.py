@@ -1,5 +1,5 @@
 # TODO: Store these prompt files in a Docker volume
-from backend.constants import PROMPTS_PATH
+from backend.backend.constants import PROMPTS_PATH
 from mlflow.genai import register_prompt
 
 def register_system_prompts(**kwargs):
