@@ -1,5 +1,5 @@
 [project]
-name = "fullstack-llmops-project"
+name = "study_buddy"
 version = "0.1.0"
 description = "Fullstack project with RAG"
 readme = "README.md"
@@ -7,4 +7,16 @@ requires-python = ">=3.13"
 dependencies = [
     "backend",
     "frontend",
+    "ipykernel"
 ]
+
+[tool.uv.sources]
+backend = { workspace = true }
+frontend = { workspace = true }
+
+[tool.uv.workspace]
+members = ["src/study_buddy/frontend", "src/study_buddy/backend"]
+
+[build-system]
+requires = ["uv_build>=0.11.9,<0.12"]
+build-backend = "uv_build"
