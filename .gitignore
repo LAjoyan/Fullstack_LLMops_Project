@@ -207,7 +207,3 @@ marimo/_lsp/
 __marimo__/
 
 lancedb
-
-# MLflow
-mlflow.db
-mlruns/
