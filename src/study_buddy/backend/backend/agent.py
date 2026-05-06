@@ -8,7 +8,7 @@ vector_db = lancedb.connect(uri=VECTOR_DB_PATH)
 
 rag_agent = Agent(
     model=MODEL,
-    system_prompt=load_prompt(),
+    system_prompt=load_prompt("rag_agent_system_prompt").format(),
     output_type=RagResponse,
 )
 
