@@ -1,6 +1,6 @@
 from pathlib import Path
 
-ROOT_PATH = Path(__file__).parents[1]
+ROOT_PATH = Path(__file__).parents[2]
 DATA_PATH = ROOT_PATH / "data"
 
 VECTOR_DB_PATH = DATA_PATH / "lancedb"
