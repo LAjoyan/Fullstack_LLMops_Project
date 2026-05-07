@@ -1,9 +1,11 @@
 from fastapi import FastAPI
 from backend.data_models import Prompt, RagResponse
 from backend.agent import bot_answer
+from backend.middlewares import logging_middleware
 
 
 app = FastAPI()
+logging_middleware(app=app)
 
 @app.get("/")
 async def status():
