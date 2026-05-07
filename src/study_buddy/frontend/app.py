@@ -8,7 +8,7 @@ def layout():
     st.markdown("#  Study buddy with LLM")
     st.markdown("Ask a question about LLM projects and get an answer!")
 
-    text_input = st.text_input(label="ask a question")
+    text_input = st.text_input(label="Ask a question")
 
     if st.button("send") and text_input.strip() != "":
 
