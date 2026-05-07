@@ -23,28 +23,52 @@ The project is developed collaboratively and follows a structured workflow using
 ## 🏗️ Project Structure
 
 ```
-fullstack-llmops-project/
-├── backend/              # RAG logic, LLM interaction
-│   ├── constants.py
-│   └── pyproject.toml
+FULLSTACK_LLMOPS_PROJECT/
 │
-├── frontend/             # UI (Streamlit will be added soon)
-│   └── pyproject.toml
-│
-├── data/                 # Lecture transcripts (RAG source)
-│
-├── setup/                # Ingestion & vector DB setup
-│   └── ingestion.py
-│
-├── monitoring/           # MLflow (planned)
-│
-├── .env
-├── .gitignore
-├── .python-version
-├── pyproject.toml        # Root config (no dependencies)
-├── uv.lock
-├── README.md
-└── way_of_working.md
+├── .venv/
+├── src/
+│   └── study_buddy/
+│       └── backend/
+│           ├── pyproject.toml
+│           ├── backend/
+│           │   ├── agent.py
+│           │   ├── api.py
+│           │   ├── constants.py
+│           │   └── data_models.py
+│           ├── data/
+│           │
+│           ├── dockerfiles/
+│           │   ├── backend.dockerfile
+│           │   └── frontend.dockerfile
+│           │
+│           ├── explorations/
+│           │   └── exploring.ipynb
+│           │
+│           ├── frontend/
+│           │   ├── app.py
+│           │   └── pyproject.toml
+│           │
+│           ├── lance_db/LectureTranscript.lance
+│           │
+│           ├── monitoring/
+│           │   └── mlflow.db
+│           │
+│           ├── prompt_engineering/
+│           │   ├── prompt_loader.py
+│           │   └── agents/
+│           │       └── rag_agent_system_prompt.md
+│           │
+│           ├── setup/
+│           │   └── ingestion.py
+│           │
+│           ├── __init__.py
+│           ├── .env
+│           ├── docker-compose.yaml
+│           ├── .gitignore
+│           ├── .python-version
+│           ├── pyproject.toml
+│           ├── README.md
+│           └── uv.lock
 ```
 
 ## 📦 Project Configuration
