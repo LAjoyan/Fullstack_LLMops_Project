@@ -37,13 +37,12 @@ def retrieve_documents(query: str, k: int = 3) -> str:
     )
 
 
-@rag_agent.tool_plain
-def generate_quiz(user_query: str, k: int = 1) -> str:  # reducing nnumber of docs
+def generate_quiz(user_query: str, k: int = 3) -> str:  # reducing nnumber of docs
 
     # 1. Extract number of questions (default = 5)
     match = re.search(r"\d+", user_query)
     num_questions = int(match.group()) if match else 5
-    num_questions = min(num_questions, 2)
+    num_questions = min(num_questions, 5)
     # 2. Extract topic
     topic = user_query.lower().replace("quiz", "").strip()
     if not topic:
@@ -57,7 +56,7 @@ def generate_quiz(user_query: str, k: int = 1) -> str:  # reducing nnumber of do
 
     # 4. Combine context
     context = "\n\n".join(
-        [doc["content"][:150] for doc in results]
+        [doc["content"][:300] for doc in results]
     )  # reducing context size
 
     return f"""
@@ -67,17 +66,20 @@ Context:
 {context}
 
 Task:
-Generate {num_questions} multiple choice questions.
+Generate 1 multiple choice question based on the context.
 
-Requirements:
-- 4 options (A-D) , keep every option in a separate line
-- Keep questions short
-- The user must provide and you say if it's correct or wrong
-- If it's wrong you explain why the selected answer was wrong
+You MUST format your response EXACTLY like this:
+QUESTION: [The question]
+A) [Option A]
+B)[Option B]
+C) [Option C]
+D) [Option D]
+---
+CORRECT_ANSWER: [Just the letter A, B, C, or D]
+EXPLANATION:[Brief explanation of why the answer is correct and others are wrong]
 """
 
 
-@rag_agent.tool_plain
 def generate_flashcards(user_query: str, k: int = 1) -> str:
 
     topic = user_query.lower().replace("flashcards", "").strip()
@@ -103,33 +105,6 @@ Task: Create flashcards (Q/A format).
 
 async def bot_answer(user_prompt: str):
     try:
-        user_lower = user_prompt.lower()
-
-        # 🚀 Bypass agent for quiz
-        if "quiz" in user_lower:
-            prompt = generate_quiz(user_prompt)
-            response = await rag_agent.run(prompt)
-            answer = response.output.answer
-
-            return RagResponse(
-                filename="Quiz",
-                filepath="Generated",
-                answer=answer,
-            )
-
-        # 🚀 Bypass agent for flashcards
-        if "flashcards" in user_lower:
-            prompt = generate_flashcards(user_prompt)
-            response = await rag_agent.run(prompt)
-            answer = response.output.answer
-
-            return RagResponse(
-                filename="Flashcards",
-                filepath="Generated",
-                answer=answer,
-            )
-
-        # ✅ Only use agent for normal Q&A
         response = await rag_agent.run(user_prompt)
         return response.output
 
