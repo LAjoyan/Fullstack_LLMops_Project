@@ -22,7 +22,7 @@ rag_agent = Agent(
 
 
 @rag_agent.tool_plain
-def retrieve_documents(query: str, k: int = 1) -> str:
+def retrieve_documents(query: str, k: int = 3) -> str:
     results = vector_db["LectureTranscript"].search(query=query).limit(k).to_list()
 
     if not results:
