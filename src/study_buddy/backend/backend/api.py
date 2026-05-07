@@ -5,7 +5,7 @@ from backend.middlewares import logging_middleware
 
 
 app = FastAPI()
-logging_middleware(app=app)
+# logging_middleware(app=app) # TODO: Activate when ready
 
 @app.get("/")
 async def status():
