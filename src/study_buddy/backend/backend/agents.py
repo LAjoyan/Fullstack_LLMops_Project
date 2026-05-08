@@ -37,7 +37,7 @@ def retrieve_documents(query: str, k: int = 3) -> str:
     )
 
 
-def generate_quiz(user_query: str, k: int = 3) -> str:  # reducing nnumber of docs
+def generate_quiz(user_query: str, k: int = 3) -> str:  
 
     # 1. Extract number of questions (default = 5)
     match = re.search(r"\d+", user_query)
@@ -57,7 +57,7 @@ def generate_quiz(user_query: str, k: int = 3) -> str:  # reducing nnumber of do
     # 4. Combine context
     context = "\n\n".join(
         [doc["content"][:300] for doc in results]
-    )  # reducing context size
+    )  
 
     return f"""
 Topic: {topic}
