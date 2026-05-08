@@ -36,5 +36,5 @@ async def bot_answer(user_prompt: str):
         return RagResponse(
             filename="Error",
             filepath="Error",
-            answer=f"Något gick fel i Agenten: {str(e)}"
+            answer=f"An error occurred in the agent.: {str(e)}"
         )
