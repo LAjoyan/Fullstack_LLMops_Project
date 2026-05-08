@@ -7,7 +7,8 @@ requires-python = ">=3.13"
 dependencies = [
     "backend",
     "frontend",
-    "ipykernel"
+    "ipykernel",
+    "litellm>=1.83.0",
 ]
 
 [tool.uv.sources]

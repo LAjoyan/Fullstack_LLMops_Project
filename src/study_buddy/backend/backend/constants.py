@@ -6,6 +6,7 @@ DATA_PATH = ROOT_PATH / "data"
 
 MODEL = "openrouter:openai/gpt-4.1-nano"
 EMBEDDING_MODEL = "embed-multilingual-light-v3.0"
+LLM_JUDGE = "openai:/openai/gpt-4o-mini"
 
 # TODO: Verify PROMPTS_PATH works correctly inside Docker containers
 PROMPTS_PATH = ROOT_PATH / "prompt_engineering"

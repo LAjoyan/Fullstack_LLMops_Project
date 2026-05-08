@@ -208,3 +208,4 @@ __marimo__/
 
 lancedb
 vector_db/
+mlflow.db
