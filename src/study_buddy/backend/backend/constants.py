@@ -1,10 +1,14 @@
 from pathlib import Path
 import mlflow
+from pydantic_ai.models.openrouter import OpenRouterModel
+
 
 ROOT_PATH = Path(__file__).parents[2]
 DATA_PATH = ROOT_PATH / "data"
 
-MODEL = "openrouter:openai/gpt-4.1-nano"
+MODEL = OpenRouterModel(
+    "openai/gpt-3.5-turbo",
+)
 EMBEDDING_MODEL = "embed-multilingual-light-v3.0"
 
 # TODO: Verify PROMPTS_PATH works correctly inside Docker containers
