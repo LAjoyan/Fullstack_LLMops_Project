@@ -14,3 +14,6 @@ VECTOR_DB_PATH = ROOT_PATH / "lancedb"
 
 # Configure MLflow to use a local SQLite database for experiment tracking
 mlflow.set_tracking_uri(f"sqlite:///{MONITORING_PATH / 'mlflow.db'}")
+
+# Setting experiment in MLflow
+mlflow.set_experiment("study_buddy_bot")
