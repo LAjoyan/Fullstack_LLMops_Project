@@ -4,8 +4,11 @@ load_dotenv()
 from fastapi import FastAPI
 from backend.data_models import Prompt, RagResponse
 from backend.agents import bot_answer, generate_quiz, generate_flashcards, rag_agent
+from backend.agent import bot_answer
+from backend.middlewares import logging_middleware
 
 app = FastAPI()
+# logging_middleware(app=app) # TODO: Activate when ready
 
 
 @app.get("/")
