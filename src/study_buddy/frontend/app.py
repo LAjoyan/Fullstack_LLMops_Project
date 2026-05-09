@@ -15,7 +15,7 @@ def layout():
         try:
 
             with st.spinner("Thinking..."):
-                response = httpx.post(API_URL, json={"prompt": text_input}, timeout=300)
+                response = httpx.post(f"{API_URL}/rag/query", json={"prompt": text_input}, timeout=300)
                 response.raise_for_status()
                 data = response.json()
 
