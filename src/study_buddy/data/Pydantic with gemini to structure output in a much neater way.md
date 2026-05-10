@@ -1,96 +1,271 @@
-# Pydantic with gemini to structure output in a much neater way
+# Corrected Words / Terms
 
-**Kokchun Giang:** [00:00:00] Hello and welcome to this video where we'll use pedantic together with Gemini in order to structure the output that it becomes much more structured than before, that we can get Jason data back and we'll get back by pedantic objects. Models ponic models, which you can use to further process the data.
+Hello and welcome to this video where we'll use Pydantic together with Gemini in order to structure the output so that it becomes much more structured than before.
 
-And we have done this. I have done a similar video of this before, but the video I did before was relying too much on the prompt and there's an issue with that. I will show you example here. You can take a look at this example here. We use the prompt and tell it to not write out for example, these back ticks and sometimes the back ticks comes anyway.
+We can get JSON data back and also get back Pydantic model objects, which we can further process in our applications.
 
-Still need to parse it afterwards to remove these b but this this is not very [00:01:00] robust as as the model will give different result each time.
+I have done a similar video before, but in that video I relied too much on prompting, and there is an issue with that.
 
-If you want it more robust, you should take a look into the documentation and see that, oh, there is a way. In Gemini to actually get it structured directly by placing in a edan model.
+Let me show you an example.
 
-that is what we will explore in this lecture, and you'll see that this is much more robust and cleaner than in the previous lecture. But it's a good base to see how you would structure it. By yourself . That is pretty good to set the basics, but now we'll make it much more robust and cleaner.
+Previously we used prompts telling the model not to write markdown backticks and similar formatting. But sometimes the backticks still appeared anyway.
 
-**Kokchun Giang-1:** you can see this is an empty ~~v ~~vicious studio code repository or folder. And what we start with I have this dot nv, and here I've placed my
+That means we still needed to parse the output afterwards and remove those backticks manually.
 
-Gemini underscore API underscore [00:02:00] key. It's very important that you name it in this way, or you can name it Google API key. And the reason for that is if you name it in this way, then.
+This approach is not very robust because the model can generate slightly different outputs each time.
 
-The Gen ai, it's quite smart. ~~This ~~this class and what it does is that it will be able to find this environment variable automagically. You don't need to work with import o. And then low e, nv and os get nv and then send it in as API key, it'll find it automagically.
+If you want a much more robust solution, you should look at the Gemini documentation.
 
-However it is good to learn how to do it with nv with Python, NV and low e NV and os dot getTV as these are the basically fundamental and the most. To get the secrets from ENV files. But since [00:03:00] Gemini has this automagically for us, we'll take, we'll make use of it. You'll see the code is much shorter and cleaner.
+There is actually a way in Gemini to directly structure the response by supplying a Pydantic model schema.
 
-Let's start now. I will create a virtual environment. I'll activate this virtual environment. I have done UV VNV, and now I'm activating it with source. I've activated it. And then UV pip install. I PI kernel. To make, to work with chip notebooks, and then I will need tic in order to work with our pedantic.
+That is what we will explore in this lecture.
 
-And then we will need what else do we need? ~~We need to have Gemini, ~~we need to have Google dash Gen ai. And this is basically all I need pandas as well because I want to demonstrate the working with pandas data frame afterwards. Okay. This is all I want done. That was quite quick.
+You'll see that this approach is much cleaner and more robust than relying purely on prompting.
 
-Okay. Let's open up a PYN notebook now. I'll call this [00:04:00] Gemini. ~~Tic robust output. ID Okay, let's call this structure Gemini. Outputs with gigantic. ~~Okay. Changed my virtual environment. Close this down, change this to Python, and we're ready to go. From Google import gen AI from, let's start with this one, client equals to gen AI client
+Now you can see this is an empty Visual Studio Code repository or folder.
 
-**Kokchun Giang-2:** let's. Create the response here. Response equals to client dot models, generate content. And here when you do generate content, you choose which model you want. Model equals to Gemini dash 2.5 dash flash. I'll use this one as a start, but when I will generate more [00:05:00] data later on, I will move on to the pro as it's more capable Contents equals to, this is basically from the example I was I've changed it a little bit. List a few Asian soups, recipes, a yummy description, and list the ingredients. Okay, this is my starting response. Create this one. And I will say dot text. I'll print this out. And if you just look at this one, this is just the normal way we have done this.
+What we start with is an .env file.
 
-This is without any without any schema that we forces on. And we'll see what it looks like in the beginning. Here you can see. It's just unstructured text or basically it's markdown text, which you could [00:06:00] use. But the ~~mo ~~mostly unstructured maybe semi-structured if you would say, but we can see that this is just some text that we get from this model.
+Inside it I have placed:
 
-Let's ~~copy this one. Can we do better ~~copy this one? What we could do is that. If you follow from the previous lecture, you could do like this, for example we make it a multi-line string. Give me fields of~~ gimme me fields of let's see. ~~Recipe name string. Let's see, what do we have more?
+GEMINI_API_KEY
 
-We have a description. This is a string as well. We have ingredients, which could be list of string and then we'll say not in markdown format. ~~Something. ~~Something in this style. If I do response text, what will [00:07:00] we get from here?
+It is very important that you name it this way, or alternatively:
 
-Yes, it's a little bit slower when you let it think through how it will create this.
+GOOGLE_API_KEY
 
-Okay. And you can see it here. We have the response to text. I will type out respon, I will to print response text and you can see, okay I, maybe I should have written it as adjacent format,
+The reason is that the genai client can automatically detect this environment variable.
 
-**Kokchun Giang-3:** Okay, let's make this structured we can make it structured. In this way. We create a class called recipe. This should be a base model. Then I should from Ian import base model. I have my base model.
+That means we don't need to manually import os, use load_dotenv(), call os.getenv(), and then pass the API key manually.
 
-And here are the recipe name as a string. We have description [00:08:00] as a string note that these are nan models. It's basically Python classes, but they are, they're inheriting this base model that it is a base model as well. It's an instance of base model. We have here ingredients. List of string. That is what we have.
+The Gemini client finds it automatically.
 
-Recipe name, the description, the ingredients as a list of strings. And then we have our client, right? Client equals the gen ai. Do client it. Actually, I can go up and paste what we had before. Yeah, this one, I'll copy this one, this response.
+Of course, it is still good to learn how to use dotenv and os.getenv() because those are fundamental concepts.
 
-Okay. Here we have, let's see here we have our model, our contents, and what we need to do is just add [00:09:00] this config. This is quite simple and super nice to use, response. You call it response mind type, and you have application slash json, and in this way we'll get JSON data and then you choose the schema that you want.
+But since Gemini handles this automatically, we will use the cleaner approach.
 
-You have here response schema, and you can have here list of recipe. That is it, friends. We have here close this one response mind type as application Jason. And then we have response schema as a list of recipe because that is what we want in the end. We want the list of recipes. Okay, let's do this response text [00:10:00] print.
+Let's start now.
 
-Or basically, I don't need to write response to text, but you can see directly here. We have a list here, and ~~we get, ~~you can see Jason data here. Recipe name, Tom Mko, description, the description of it, ingredients as the list of strings. And then we have the next one, et cetera. ~~Then we can do like this response past, and this is your data.~~
+I will create a virtual environment and activate it.
 
-You have a list of recipes. You have here recipe, recipe, name, description. ~~You have let's see. ~~You have recipe here. Next recipe. You had the description and the ingredient somewhere. Let's do like this. We call this recipes. ~~Recipes.~~
+Then I install the packages:
 
-We can take a, since it's a list you can see, okay, three recipes, fine, recipes of zero. The first one we can take dot description. Here is the description. Recipe. Zero [00:11:00] dot recipe name? Ah, M. Good. Okay. Recipe Zero dot ingredients. And you can see the ingredients here. Quite cool. Quite cool. ~~Can we, ~~let's simulate something else.
+uv pip install ipykernel pydantic google-genai pandas
 
-Let's simulate house prices.
+I need:
 
-Let's create our model here. Class home, BM based model price in what do we have more monthly fee int. We have a living area. Float number. Let's see, number rooms. INT type. Okay. The type I want to be either apartment or home. For that, we'll do from typing, [00:12:00] import literal, then we'll have literal here as apartment.
+* ipykernel for Jupyter notebooks
+* pydantic for structured schemas
+* google-genai for Gemini
+* pandas because later I want to demonstrate working with DataFrames
 
-Or house and then address as string. Okay, this is my pedantic model, the home, and now let's create this one. Response equals to client. Do models dot generate content. And model Gemini 2.5. I will have a pro since it can it can generate more data. Contents equals to. Let's just do a multi-line string here.
+Now let's open a notebook.
 
-List 50 apartments and houses in Sweden with their monthly [00:13:00] fee price living area.
+I will call it:
 
-Number of rooms address type if it is apartment or house. All currencies are in SCK. Data should be simulation of Swedish. Housing. Okay. And here, let's make after the content, let's do the config equals to the same as before we have response mind type application slash json. And then we have response schema as list of home.
+structure_gemini_outputs_with_pydantic.ipynb
 
-And that [00:14:00] is it, my friends. Let's try this out. Homes let's see. Yeah, ~~we can we can type, ~~we can do this. We can run this first.
+Change the kernel to the virtual environment and we're ready.
 
-It takes a little bit of time for it to generate this.
+We start with:
 
-Let's see what we get here.
+from google import genai
 
-Did I miss something type address? No, I think it's fine. This will go into this schema here that we have created. We're generating ~~50 ~~50 apartments and houses. It should be 50 in total.
+Then:
 
-Okay, it's done. Let's look at it now. Response past equals our homes. Homes. Woohoo. We have data now, you can see this is let's check it out. Length of homes. This is a list, right? 50. Okay, great. Homes. Let's ~~take ~~take a look into the first one. Zero. You can [00:15:00] see this is a Edan model, home of homes of Zero.
+client = genai.Client()
 
-We can take dot price. You can see the price. ~~We can take a look into. I'll copy this one. ~~Homes dot address. Maybe I can see the address here. Great. Okay, now I want to do some filtering of this. And in order to do filtering of this, it's quite simple. We just need to put this into a pandas data frame and then we can do ~~whatever is, ~~whatever we can do in Pandas data frame.
+Now let's create a response.
 
-Import. Pandas as PD and take a look into this. Homes is a, okay, it's the import that takes a little bit of time. It's the homes already existed. Okay. You can see homes is a ~~list ~~list like this. If I would do like this PD data frame of homes, then we get. Not what we want, right? This is not what we want.
+response = client.models.generate_content()
 
-Instead take a [00:16:00] look into this. I will make a code in between here. We can do homes, dot done the dick. And you can see, let's see. List doesn't have done the dick, right? Yeah. Home has a done addict. Homes of zero ddi. You can see this is the dictionary of one entry. What you could do is that you can loop through this.
+We choose the model:
 
-Instead of putting homes here, you can do like this home, do DDI for home in homes, and you can see this is your data frame, as simple as that. Or take a look into this one response is this one right? Response dot. Do you have Jason? I know we don't actually response dot [00:17:00] text. Yeah. This okay. Yeah. I think this is simpler.
+model="gemini-2.5-flash"
 
-You have you or you could take another direction, is that you take response text and then you do model validate. ~~You DC realize it into a or you yeah. ~~You DC realize it into a pedantic model and then, or actually ~~this is quite, ~~this is much simpler. Forget what I just said. Here you have home do means that dict means that you will get this dictionary for each entry of home in homes.
+And the prompt:
 
-And then when you have this dictionary it's basically you'll have a list of dictionaries. And this is perfect for creating a pandas data frame directly. Now. You could do df head, we could take a look into only the cheap houses, or df query price. Let's see, price smaller than 5 million for example.
+"List a few Asian soup recipes, a yummy description, and list the ingredients."
 
-And [00:18:00] let's take a look into type equals ~~apartment type equals two ~~apartment. And ~~you can or ~~type equals to house. I wanted to have cheap houses. And you can see fewer cheaper houses. But yes, we found it we are able to to filter this data frame. When you have this one for example, you could say like this cheap houses equals this, cheap houses.
+Then:
 
-And then you could do like cheap houses dot two CSV if you want. And you could have like cheap houses dot csv. You can see here we have our CSV data. That's cool. But I don't want to have the index. Index equals the false. Okay. Run it and you can see. Yes. Perfect. Ah, cool. We can simulate data now with structured data and then we can do a lot of processing and learn a lot from this.
+response.text
 
-this was super cool that we used pedantic together with Gemini to get [00:19:00] structured responses that we get out our JS data. And then finally we used it to create Panas data frame to show you that it's very easy to just filter the data once we have it in JSON format. And this is in contrast to not a video that we made before.
+This is the normal way we have done things before.
 
-Was that, there we utilize the prompting more, but that is not ~~as as ~~as robust as this video because here we use the built in in Gemini we used, its, response type, response mind type s the application Jason. And we also used response schema and we placed in our pedantic model over there.
+You can see that the result is basically markdown text.
 
-Super cool. Super cool. I hope that you've learned a lot watching this video and see you in the next one. Bye.
+It is semi-structured at best.
 
+Now let's see if we can do better.
+
+Previously we might have prompted something like:
+
+Give me fields of:
+
+* recipe_name: string
+* description: string
+* ingredients: list[string]
+
+and say:
+
+"Do not use markdown."
+
+But again, this still depends too much on prompting.
+
+Instead we will use Pydantic.
+
+We create a schema:
+
+class Recipe(BaseModel):
+recipe_name: str
+description: str
+ingredients: list[str]
+
+Notice that these are Pydantic models.
+
+They are normal Python classes inheriting from BaseModel.
+
+Now we create another response.
+
+The important additions are:
+
+response_mime_type="application/json"
+
+and:
+
+response_schema=list[Recipe]
+
+This tells Gemini exactly which structure we expect.
+
+Now when we run this, we directly get structured JSON.
+
+Very cool.
+
+Even cooler:
+
+response.parsed
+
+returns actual Pydantic objects.
+
+Now we can do:
+
+recipes[0].description
+
+recipes[0].recipe_name
+
+recipes[0].ingredients
+
+Very clean.
+
+Now let's simulate something else.
+
+Let's simulate housing data.
+
+We create another model:
+
+class Home(BaseModel):
+price: int
+monthly_fee: int
+living_area: float
+number_rooms: int
+type: Literal["apartment", "house"]
+address: str
+
+Now let's generate Swedish housing data.
+
+Prompt:
+
+"List 50 apartments and houses in Sweden with their monthly fee, price, living area, number of rooms, address, and type."
+
+We again use:
+
+response_mime_type="application/json"
+
+and:
+
+response_schema=list[Home]
+
+Now Gemini generates structured housing data.
+
+Then:
+
+homes = response.parsed
+
+We can inspect:
+
+len(homes)
+
+We get 50 homes.
+
+Each item is a Home Pydantic object.
+
+For example:
+
+homes[0].price
+
+homes[0].address
+
+Now let's move into pandas.
+
+If we directly do:
+
+pd.DataFrame(homes)
+
+we don't get exactly what we want.
+
+Instead we convert each Pydantic object into a dictionary.
+
+We can do:
+
+home.model_dump()
+
+for each home.
+
+Then:
+
+pd.DataFrame(
+[home.model_dump() for home in homes]
+)
+
+Now we have a perfect pandas DataFrame.
+
+Very simple.
+
+Now we can filter the data easily.
+
+For example:
+
+cheap_houses = df.query(
+'price < 5000000 and type == "house"'
+)
+
+Very cool.
+
+And we can export to CSV:
+
+cheap_houses.to_csv(
+"cheap_houses.csv",
+index=False
+)
+
+Now we have structured simulated housing data generated directly from Gemini.
+
+This is extremely powerful.
+
+Compared to the previous video where we relied mostly on prompting, this approach is much more robust because we use Gemini's built-in structured output support.
+
+We used:
+
+* response_mime_type="application/json"
+* response_schema with a Pydantic model
+
+This gives us clean validated structured outputs immediately.
+
+Super cool.
+
+I hope that you've learned a lot from this video.
+
+Thank you for watching and see you in the next one.
+
+Bye.
