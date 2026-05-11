@@ -1,18 +1,20 @@
 import os
 import mlflow
-from backend.constants import LLM_JUDGE, MONITORING_PATH
+from backend.constants import LLM_JUDGE, MONITORING_PATH, bot_answer
+import lancedb
+import asyncio
+import nest_asyncio
+from backend.constants import VECTOR_DB_PATH
+import requests
+import json
+from mlflow.genai import evaluate
+from mlflow.genai.scorers import scorer
 
 db_path = MONITORING_PATH / "mlflow.db"
 if db_path.exists():
     os.chmod(db_path, 0o666)
 
 mlflow.set_experiment("rag_evaluation")
-
-import lancedb
-import asyncio
-import nest_asyncio
-from backend.constants import VECTOR_DB_PATH
-from backend.agents import bot_answer
 
 nest_asyncio.apply()
 
@@ -32,11 +34,6 @@ evaluation_dataset = [
 def predict_fn(prompt, context=None):
     result = asyncio.get_event_loop().run_until_complete(bot_answer(prompt))
     return result.answer
-
-import requests
-import json
-from mlflow.genai import evaluate
-from mlflow.genai.scorers import scorer
 
 RELEVANCE_PROMPT = """Rate from 1-5 how well the answer addresses the question.
 Question: {inputs}
