@@ -65,7 +65,7 @@ def judge(prompt: str) -> int:
         "https://openrouter.ai/api/v1/chat/completions",
         headers={"Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}"},
         json={
-            "model": "openai/gpt-4o-mini",
+            "model": LLM_JUDGE,
             "messages": [{"role": "user", "content": prompt}],
         },
     )
