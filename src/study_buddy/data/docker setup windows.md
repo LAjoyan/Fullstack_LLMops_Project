@@ -1,74 +1,327 @@
-# docker setup windows
+Docker Setup Windows
 
-[00:00:00] Hello and welcome to this video where I will go into installing a docker on my Windows machine. And for that they will need to install WSL, so Windows subsystem for Linux. And then afterwards we'll install the Docker desktop. And when that's done we'll do a test to, create an image from a docker file and ~~then ~~then from that will spin up a container to see that it works. So moving on to my windows virtual machine now.~~ So ~~here I am in my Windows machine. ~~So ~~let's go into the browser. Microsoft Edge, for example. I haven't installed another browser, so I will use this one. ~~So here let's down go in. So ~~you go into this web page, which is also in my GitHub repo, the documentation. ~~So ~~here you find ~~desktop ~~docker desktop for Windows, and I'll pick this one.
+Hello and welcome to this video where I will go into installing Docker on my Windows machine.
 
-And you download it. Yeah, ~~this goes quite quickly, but ~~I have downloaded this before. So I have it here the Docker [00:01:00] desktop installer. So just double click this one.
+For that, we will need to install WSL — Windows Subsystem for Linux.
 
-~~So ~~when installing this, it will take some time. However, it won't work for you immediately ~~when you install it. ~~So it says ~~like this, ~~use WSL2 instead of Hyper V recommended and add shortcut to desktop. So I'll just install this one.
+Afterwards, we’ll install Docker Desktop.
 
-~~So ~~now my installation has finished. ~~So ~~it says ~~here~~ close and restart. So ~~I will, ~~I'll do that. ~~So close and restart. ~~
+When that’s done, we’ll do a test where we create an image from a Dockerfile and then spin up a container to verify that everything works.
 
-Okay. Now I've restarted my computer and ~~we'll see that ~~you see that there's ~~a ~~ Docker desktop here. So I'll double click this one
+So let’s move on to my Windows virtual machine now.
 
-and you can see that. Okay. Just accept this one, read it through and accept it.
+Here I am in my Windows machine.
 
-And here finish setting up Docker use recommended settings requires administrator password use advanced settings. I'll use recommended. So finish.
+Let’s open the browser.
 
-Okay. Welcome to Docker. Just skip this one. And yeah, you can skip this one as well.[00:02:00] 
+I’ll use Microsoft Edge since I haven’t installed another browser.
 
-So Docker engine stopped. This is interesting. So let's see what it says here. ~~Starting dock, ~~starting the docker engine.
+Go to the Docker Desktop for Windows webpage, which is also linked in my GitHub repository documentation.
 
-I think it will fail.
+Download Docker Desktop for Windows.
 
-Oh yeah, it's waiting, but I believe it'll fail. Okay, so I'm back here and we can see that we have this ticked on. So use the WSL two based engine. Let's go back to Docker. So here it actually works that is quite interesting. However usually. I think it works. Let's try a PowerShell here so you could do this in git bash.
+I already downloaded it before, so I already have the installer here.
 
-So just write docker and see what happens. So you have a docker command. Okay, cool. Docker ps to see the containers. So you have container id, image, command, created status, ports, etc. ~~Let's see, because it usually requires WSL, . Oh, this is quite cool. ~~Actually, I looked at it. [00:03:00] So I went into PowerShell and I wrote WSL dash list. You can also do that. And if you see that the Windows subsystem for Linux distribution and it says Docker desktop and default, it means that actually Docker desktop has installed this for me before~~ when before like last.~~
+Double-click the Docker Desktop installer.
 
-~~Here, I think~~ when I installed ~~the ~~docker in windows, ~~then ~~I needed to install WSL~~ by the f ~~first. So I installed WSL through a command called WSL dash install. So then after installing that. Then you need to like restart, you install some Linux distribution, for example, Ubuntu.
+Installing Docker takes some time.
 
-And then~~ after you have done, ~~after I've done that, ~~if it works then ~~I installed Docker desktop and ~~then ~~it will connect to my WSL too. ~~And, ~~but~~ there, ~~there's also a chance that it doesn't work. And then it has to do with~~ how ~~the setting of your computer. If you have hyper V if that is enabled or not, and if it's not enabled, ~~then ~~you need to go into the BIOS [00:04:00] and ~~set so that you ~~allow virtualization.
+During installation, it may ask:
 
-So that might happen in a windows computer. ~~So ~~some windows computers, it's already set some it's not set. So then you have to do it yourself by going into the BIOS ~~and. Doing that ~~in order to do that, you need to restart the computer. And I think it was F2 ~~that you click ~~or F10 search it up, how you go into the bios and how you enable~~ the how you enable, uh, ~~what's called virtualization?
+Use WSL2 instead of Hyper-V (recommended)
+Add shortcut to desktop
 
-Yes, search that up in case you need to do that. Otherwise was surprised myself that it worked directly. So I'm very happy for that. ~~So ~~what you should do. Is ~~to ~~try ~~out, ~~to install Docker desktop as I did~~ just install it ~~and see that it installs WSL for you. But if it doesn't and ~~that ~~there's an issue, then you need to install WSL yourself ~~and~~ and maybe fix virtualization.
+I’ll keep the recommended settings and install it.
 
-Yes. So now let's go on to test it out. So let's create a Docker file ~~and ~~and spin up a ~~com ~~container. ~~Okay, so now it's time for us to test out Docker. ~~So I can go into, let's see, ls, I will go [00:05:00] into desktop. ~~And ~~I'll ~~just ~~create the folder ~~here~~ called ~~test docker test, let's see, ~~Python docker ~~like this. ~~So I've created a folder and I will open this folder with code test Python docker.
+Now the installation has finished.
 
-Okay, so I've opened this one with Visual Studio Code. Yes, I trust the authors. Now, increase this one. ~~Yes, so here, ~~let's open up a terminal, new terminal.
+It says:
 
-Okay, so I will create ~~a new file. I will do like this, ~~a new file called Dockerfile.
+“Close and restart”
 
-So in the Docker file, I will ~~just~~ copy in the code from my lecture notes. So basically I can explain what it does. So it takes from Python ~~three point ~~11. So it'll take an image that is published in Docker hub, and then it will install the operative system for that it's a Linux distribution.
+So I’ll do that.
 
-And based on that, it will install ~~this ~~Python [00:06:00] 3. 11. ~~And then ~~from this image, ~~we have~~ we have a working directory ~~so that I go into ~~the app folder of ~~this ~~this system. ~~So ~~you can see it as an isolated environment, ~~right? And ~~inside ~~of ~~this isolated environment, we have a folder in the root directory ~~that is ~~called app which I've created now.
+Now I have restarted my computer.
 
-with this Workdir app. And then I will copy dot. It means I will copy everything from this folder. ~~Into everything ~~into my working directory folder. So everything will go ~~into~~ into the app folder of the docker container. But we will go in later on to investigate that, but this will just test out that it works.
+You can see Docker Desktop here.
 
-And then I will do run pip install dash R requirements. txt. It means that I will install based on my requirements. txt. So I will create the requirements. Let's do that. Requirements. txt. ~~And ~~what will I put here? I'll just put in pandas to show that it actually installs something. ~~So ~~usually you also, ~~you ~~put in a version ~~also, ~~but for [00:07:00] simplicity, I won't do that.
+Double-click it.
 
-And then it will do CMD. It's a command that it should run whenever I run this Docker container. So when I spin up this container, this command will run. So what command do I want to run? I want to run Python ~~comma ~~app. py. It means that I will run Python and app. py. And that means I will have ~~a, ~~an app called app.
+Accept the agreement.
 
-py. So I'll create that app. py. And inside of this one, I will ~~just I'll ~~just put in from my lecture notes.
+Then choose:
 
-~~So I will put in let's see. ~~So this is from my lecture notes. ~~So ~~it's just a simple pandas data frame that we create mock data. And then we also print out the sys. version to ~~see so that you can ~~see the Python version so that it differs from the system. ~~So ~~save this one. ~~And then I will, ~~first of all, I'll do Python dash version so that you can see which version I have.
+“Use recommended settings”
 
-So I'm in 3. 12. 8. This is the one that is installed in the host system, right? So it's installed on my [00:08:00] computer or on this virtual machine. ~~And then I will do like this Docker. So then I will, ~~I need to be in the same folder as my docker file. ~~So then ~~I will run docker~~ build dash R require, or not the dash R, ~~build and dot ~~basically, ~~or I need to have a tag actually.
+This requires administrator permissions.
 
-I will do a tag to give it a name. So I will call it first Python app, like this, and then dot to show that it's this folder and everything inside of this folder. So I'll run this one, then it will build the image.
+Click Finish.
 
-Yeah, ~~it takes for the first time, ~~it takes a little bit of time but then afterwards, when you have the image, you can use the image to spin up a container. ~~So you see exporting to image, exporting layers ~~in the theory section, you will understand what these terms mean.
+Now Docker starts.
 
-[00:09:00] So now it's installed. ~~So let's see Docker. So ~~if I run Docker image LS, then I will see all the images ~~that have been that, ~~that are stored in my Docker desktop ~~or in~~ or in my system. ~~So ~~we can see ~~that ~~there's. First Python app. ~~So ~~this is the one ~~that ~~I created, ~~so ~~25 seconds ago. ~~So ~~let's run this one.
+You can skip the welcome screens.
 
-~~docker run and then, let's see, run,~~
+Interesting.
 
-Okay. So now it's time to run the container and it's quite simple. So you just do this Docker run and the name of the image that you want to spin a container from. ~~So ~~first I turn flash app basically like this. And you can see that. Oh, cool. We have three 11 written out. That's because I used here from the Docker file.
+It says:
 
-We have from Python 3. 11. So this is you can see that this isolated from the host environment. [00:10:00] So also here you can see that the data frame was printed out. So it worked with the installation because I installed pandas, right? Actually, I don't have pandas in my system here. So if I run, for example, if I run Python.
+“Docker Engine stopped”
 
-If I do import pandas you can see that it doesn't exist. ~~This is so cool. ~~So ~~you now you have spinned up if you have come this far you have spinned up a docker ~~you have created ~~an docker ~~a docker file ~~and from the docker file you have ~~Built a docker image and from the docker image just spin up a container, but actually the container has closed itself because it's finished running.
+Let’s see what happens.
 
-~~But ~~however, if you're running, ~~for example, ~~a web server, ~~then ~~it will continue to ~~run in a run and you can have it ~~run in the background. ~~So then you could have a several. ~~You can have several containers to build up a huge system of softwares and then this is super cool. So thank you for watching this video on setting up Docker and see you in the next one.
+It’s starting the Docker Engine.
 
-And we'll go in more into details of theory and going into the Docker container ~~to see ~~to learn more. Yes. Thank you. Bye.
+Usually this is where it can fail if WSL is not properly configured.
 
+But in this case it actually works.
+
+That’s interesting.
+
+Let’s open PowerShell.
+
+You could also use Git Bash.
+
+Run:
+
+docker
+
+You can see that the Docker command exists.
+
+Now run:
+
+docker ps
+
+This shows containers.
+
+You can see columns like:
+
+Container ID
+Image
+Command
+Created
+Status
+Ports
+
+Now let’s check WSL.
+
+Run:
+
+wsl --list
+
+You can see the Linux distributions installed.
+
+If you see something like:
+
+docker-desktop
+default
+
+then Docker Desktop has already installed WSL2 automatically for you.
+
+Previously, when I installed Docker on Windows, I had to install WSL manually first using:
+
+wsl --install
+
+After installing WSL, you usually restart your computer and install a Linux distribution such as Ubuntu.
+
+Then Docker Desktop connects to WSL2.
+
+Sometimes Docker still won’t work because virtualization is disabled.
+
+If that happens, you need to enable virtualization in the BIOS.
+
+Some computers already have it enabled and some do not.
+
+To enable virtualization, restart the computer and enter BIOS.
+
+Usually this is done with keys like:
+
+F2
+F10
+Delete
+
+Search online for your specific computer model.
+
+Then enable virtualization.
+
+Luckily for me, everything worked automatically this time.
+
+So first try installing Docker Desktop directly.
+
+If it fails, then install WSL manually and possibly enable virtualization in BIOS.
+
+Now let’s test Docker.
+
+We’ll create a Dockerfile and spin up a container.
+
+I’ll go into Desktop and create a folder called:
+
+test-python-docker
+
+Then open it with Visual Studio Code.
+
+I trust the authors.
+
+Now let’s open a terminal.
+
+Create a new file called:
+
+Dockerfile
+
+Inside the Dockerfile I’ll paste some code from my lecture notes.
+
+Let me explain what it does.
+
+We start with:
+
+FROM python:3.11
+
+This means Docker downloads a Python 3.11 image from Docker Hub.
+
+The image already contains an operating system and Python installed.
+
+Next:
+
+WORKDIR /app
+
+This creates a working directory called /app inside the container.
+
+You can think of the container as an isolated environment.
+
+Then:
+
+COPY . .
+
+This copies everything from the current folder into the container’s working directory.
+
+Next:
+
+RUN pip install -r requirements.txt
+
+This installs dependencies from requirements.txt.
+
+So let’s create that file.
+
+Create:
+
+requirements.txt
+
+Inside it, I’ll simply write:
+
+pandas
+
+Normally you would also specify a version number, but for simplicity I won’t do that here.
+
+Next:
+
+CMD ["python", "app.py"]
+
+This means that whenever the container starts, it will run:
+
+python app.py
+
+So now we need an app.py file.
+
+Create:
+
+app.py
+
+Inside it, I’ll paste a simple pandas DataFrame example from my lecture notes.
+
+I’ll also print sys.version so that we can see the Python version running inside the container.
+
+Now let’s verify the host system Python version first.
+
+Run:
+
+python --version
+
+You can see I have Python 3.12.8 installed locally on the machine.
+
+Now let’s build the Docker image.
+
+You need to be inside the same folder as the Dockerfile.
+
+Run:
+
+docker build -t first-python-app .
+
+The dot means:
+
+“Build using everything inside the current folder.”
+
+This takes a little time the first time because Docker needs to download layers and dependencies.
+
+You’ll see messages like:
+
+exporting layers
+exporting to image
+
+In the theory section we’ll later discuss what Docker layers are.
+
+Now the image has been created.
+
+Run:
+
+docker image ls
+
+This lists all Docker images stored in your system.
+
+You can now see:
+
+first-python-app
+
+That is the image we created.
+
+Now it’s time to run the container.
+
+Run:
+
+docker run first-python-app
+
+You can now see output from the container.
+
+It prints Python 3.11.
+
+That is because inside the Dockerfile we specified:
+
+FROM python:3.11
+
+So even though the host machine uses Python 3.12.8, the container uses Python 3.11.
+
+This demonstrates isolation between the host system and the container.
+
+You can also see that the pandas DataFrame was printed successfully.
+
+That means pandas was installed correctly inside the container.
+
+Actually, pandas does not even exist on my local system.
+
+If I try:
+
+import pandas
+
+locally, it fails.
+
+This is really cool.
+
+So now you have:
+
+created a Dockerfile
+built a Docker image
+spun up a Docker container
+
+The container stopped automatically because the script finished running.
+
+However, if you run something like a web server, the container would continue running in the background.
+
+Then you could run many containers together to build large software systems.
+
+That is super cool.
+
+Thank you for watching this video on setting up Docker.
+
+See you in the next one where we’ll go deeper into Docker theory and containers.
+
+Thank you.
+
+Bye.
