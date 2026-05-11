@@ -12,83 +12,78 @@ def get_base64_of_bin_file(bin_file):
         data = f.read()
     return base64.b64encode(data).decode()
 
-def set_background(png_file):
+def set_background(png_file, theme):
     try:
         bin_str = get_base64_of_bin_file(png_file)
-        page_bg_img = f'''
+
+        # Define CSS for both light and dark themes
+        light_theme_css = f'''
         <style>
+        /* General App Style */
         .stApp {{
             background-image: url("data:image/png;base64,{bin_str}");
             background-size: cover;
-            background-attachment: fixed;
-            background-position: center;
         }}
+        /* Main content block with blur effect */
         .block-container {{
             background-color: rgba(255, 255, 255, 0.45);
             backdrop-filter: blur(8px);
-            padding: 2rem 2.5rem 0.5rem 2.5rem !important;
-            border-radius: 20px;
-            margin-top: 2rem;
             border: 1px solid rgba(255, 255, 255, 0.4);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
         }}
-        .block-container > div:last-child {{ margin-bottom: 0 !important; padding-bottom: 0 !important; }}
-        footer {{ display: none !important; }}
-        .stDeployButton {{ display: none !important; }}
-        #MainMenu {{ visibility: hidden; }}
-        [data-testid="stSidebar"] {{
-            background-color: transparent !important;
-            background-image: none !important;
-        }}[data-testid="stSidebar"] > div:first-child {{
-            background-color: rgba(255, 255, 255, 0.25) !important;
-            backdrop-filter: blur(10px);
-            border-right: 1px solid rgba(255, 255, 255, 0.2);
-        }}
+        /* General text color */
         h1, h2, h3, span, label, p, .stMarkdown p {{
             color: #1E1E1E !important;
-            text-shadow: 0px 0px 10px rgba(255,255,255,0.5);
         }}
-        [data-testid="stSidebar"] li {{
-            color: #1E1E1E !important;
-            font-size: 1.2rem !important;
-            font-weight: 600 !important;
-            margin-bottom: 10px !important;
-        }}
-        div.stButton > button, div.stDownloadButton > button {{
-            background-color: #1E1E1E !important;
-            border-radius: 10px !important;
-            border: 1px solid rgba(255, 255, 255, 0.5) !important;
-            padding: 0.5rem 1rem !important;
-            transition: all 0.3s ease;
-        }}
-        div.stButton > button p, div.stDownloadButton > button p,
-        div.stButton > button span, div.stDownloadButton > button span {{
-            color: #FFFFFF !important;
-            font-weight: 600 !important;
-        }}
-        div.stButton > button:hover, div.stDownloadButton > button:hover {{
-            background-color: #333333 !important;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important;
-        }}
+        /* Input box styling for light mode */
         div[data-baseweb="input"] {{
-            background-color: #1E1E1E !important;
-            border-radius: 8px !important;
+            background-color: rgba(255, 255, 255, 0.8) !important;
+            border: 1px solid rgba(0, 0, 0, 0.2) !important;
+        }}
+        div[data-baseweb="base-input"] input {{
+            color: #000000 !important;
+            -webkit-text-fill-color: #000000 !important;
+        }}
+        </style>
+        '''
+
+        dark_theme_css = f'''
+        <style>
+        /* General App Style */
+        .stApp {{
+            background-image: url("data:image/png;base64,{bin_str}");
+            background-size: cover;
+        }}
+        /* Main content block with blur effect */
+        .block-container {{
+            background-color: rgba(30, 30, 30, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }}
+        /* General text color */
+        h1, h2, h3, span, label, p, .stMarkdown p {{
+            color: #FFFFFF !important;
+        }}
+        /* Input box styling for dark mode */
+        div[data-baseweb="input"] {{
+            background-color: #2E2E2E !important;
+            border: 1px solid rgba(255,255,255,0.3) !important;
         }}
         div[data-baseweb="base-input"] input {{
             color: #FFFFFF !important;
             -webkit-text-fill-color: #FFFFFF !important;
         }}
-        [data-testid="stExpander"] summary {{
-            background-color: #1E1E1E !important;
-            border-radius: 8px !important;
-            padding: 0.5rem 1rem !important;
-        }}[data-testid="stExpander"] summary p, [data-testid="stExpander"] summary span {{
-            color: #FFFFFF !important;
-            font-weight: 600 !important;
-        }}
         </style>
         '''
-        st.markdown(page_bg_img, unsafe_allow_html=True)
+
+        # Select and apply the theme's CSS
+        if theme == 'dark':
+            st.markdown(dark_theme_css, unsafe_allow_html=True)
+        else:
+            st.markdown(light_theme_css, unsafe_allow_html=True)
+
+        # Apply any other common CSS here if you refactor it out
+        # For simplicity, common styles are duplicated in the strings above
+
     except FileNotFoundError:
         st.warning("Background image 'background.jpg' not found.")
 
@@ -104,11 +99,33 @@ def create_pdf(text, title="Study Material"):
     return pdf.output(dest="S").encode("latin-1")
 
 def layout():
+
     st.set_page_config(page_title="Study Buddy", page_icon="🎓", layout="centered")
-    set_background("background.jpg")
+
+    if 'theme' not in st.session_state:
+        st.session_state.theme = 'light'  # Default to light mode
+
+    set_background("background.jpg", st.session_state.theme)
 
     with st.sidebar:
         st.title("🎓 Study Tools")
+        if st.session_state.theme == 'light':
+            if st.button('🌙 Switch to Dark Mode'):
+                st.session_state.theme = 'dark'
+                st.rerun() # Use st.rerun() for newer Streamlit versions
+        else:
+            if st.button('☀️ Switch to Light Mode'):
+                st.session_state.theme = 'light'
+                st.rerun() # Use st.rerun() for newer Streamlit versions
+
+        st.markdown("---") # Optional: adds a divider
+        # --- END OF ADDED CODE BLOCK ---
+
+        st.markdown("""
+        **Subjects you can ask about:**
+        - Python
+        ...
+        """)
         st.markdown("""
         **Subjects you can ask about:**
         - Python
