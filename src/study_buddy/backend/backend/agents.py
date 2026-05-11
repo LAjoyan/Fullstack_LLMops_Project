@@ -1,5 +1,3 @@
-import mlflow
-import lancedb
 from pydantic_ai import Agent
 import lancedb
 from backend.constants import MODEL, VECTOR_DB_PATH
