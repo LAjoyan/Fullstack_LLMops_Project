@@ -3,6 +3,7 @@ import lancedb
 from backend.constants import MODEL, VECTOR_DB_PATH
 from backend.data_models import RagResponse
 import mlflow
+import re
 
 vector_db = lancedb.connect(uri=VECTOR_DB_PATH)
 
@@ -19,6 +20,7 @@ rag_agent = Agent(
     output_type=RagResponse,
 )
 
+
 @rag_agent.tool_plain
 @mlflow.trace
 def retrieve_documents(query: str, k: int = 3) -> str:
@@ -34,6 +36,7 @@ def retrieve_documents(query: str, k: int = 3) -> str:
         f"Content: {doc['content'][:1000]}"
         for doc in results
     )
+
 
 @mlflow.trace
 def generate_quiz(user_query: str, k: int = 3) -> str:
@@ -54,9 +57,7 @@ def generate_quiz(user_query: str, k: int = 3) -> str:
         return "No relevant content found."
 
     # 4. Combine context
-    context = "\n\n".join(
-        [doc["content"][:300] for doc in results]
-    )
+    context = "\n\n".join([doc["content"][:300] for doc in results])
 
     return f"""
 Topic: {topic}
@@ -77,6 +78,7 @@ D) [Option D]
 CORRECT_ANSWER: [Just the letter A, B, C, or D]
 EXPLANATION:[Brief explanation of why the answer is correct and others are wrong]
 """
+
 
 @mlflow.trace
 def generate_flashcards(user_query: str, k: int = 1) -> str:
@@ -100,6 +102,7 @@ Context:
 
 Task: Create flashcards (Q/A format).
 """
+
 
 @mlflow.trace
 async def bot_answer(user_prompt: str):
