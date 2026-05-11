@@ -8,28 +8,21 @@ from fpdf import FPDF
 API_URL = os.getenv("API_URL", "http://localhost:8000/rag/query")
 
 def get_base64_of_bin_file(bin_file):
-    """Encodes a local file to base64 for CSS injection."""
     with open(bin_file, 'rb') as f:
         data = f.read()
     return base64.b64encode(data).decode()
 
 def set_background(png_file):
-    """
-    Injects CSS to set a background image and styles all components.
-    """
     try:
         bin_str = get_base64_of_bin_file(png_file)
         page_bg_img = f'''
         <style>
-        /* 1. Main Background */
         .stApp {{
             background-image: url("data:image/png;base64,{bin_str}");
             background-size: cover;
             background-attachment: fixed;
             background-position: center;
         }}
-
-        /* 2. Main Glassmorphism Container */
         .block-container {{
             background-color: rgba(255, 255, 255, 0.45); 
             backdrop-filter: blur(8px); 
@@ -39,40 +32,28 @@ def set_background(png_file):
             border: 1px solid rgba(255, 255, 255, 0.4);
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
         }}
-
-        .block-container > div:last-child {{
-            margin-bottom: 0 !important;
-            padding-bottom: 0 !important;
-        }}
-
-        /* 3. Göm Streamlits footers och knappar i högra hörnet */
-        footer {{
-            display: none !important;
-        }}
-        .stDeployButton {{
-            display: none !important;
-        }}
-        #MainMenu {{
-            visibility: hidden;
-        }}
-
-        /* 4. Sidebar Styling */[data-testid="stSidebar"] {{
+        .block-container > div:last-child {{ margin-bottom: 0 !important; padding-bottom: 0 !important; }}
+        footer {{ display: none !important; }}
+        .stDeployButton {{ display: none !important; }}
+        #MainMenu {{ visibility: hidden; }}
+        [data-testid="stSidebar"] {{
             background-color: transparent !important;
             background-image: none !important;
-        }}
-        [data-testid="stSidebar"] > div:first-child {{
+        }}[data-testid="stSidebar"] > div:first-child {{
             background-color: rgba(255, 255, 255, 0.25) !important; 
             backdrop-filter: blur(10px);
             border-right: 1px solid rgba(255, 255, 255, 0.2);
         }}
-
-        /* 5. GENERAL TEXT COLORS */
-        h1, h2, h3, span, label, p, li, .stMarkdown p, .stMarkdown li {{
+        h1, h2, h3, span, label, p, .stMarkdown p {{
             color: #1E1E1E !important;
             text-shadow: 0px 0px 10px rgba(255,255,255,0.5); 
         }}
-
-        /* 6. BUTTON STYLING */
+        [data-testid="stSidebar"] li {{
+            color: #1E1E1E !important;
+            font-size: 1.2rem !important;
+            font-weight: 600 !important;
+            margin-bottom: 10px !important;
+        }}
         div.stButton > button, div.stDownloadButton > button {{
             background-color: #1E1E1E !important; 
             border-radius: 10px !important;
@@ -80,64 +61,36 @@ def set_background(png_file):
             padding: 0.5rem 1rem !important;
             transition: all 0.3s ease;
         }}
-        
         div.stButton > button p, div.stDownloadButton > button p, 
         div.stButton > button span, div.stDownloadButton > button span {{
             color: #FFFFFF !important; 
             font-weight: 600 !important;
-            text-shadow: none !important; 
         }}
-
         div.stButton > button:hover, div.stDownloadButton > button:hover {{
             background-color: #333333 !important; 
-            border-color: #FFFFFF !important;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important;
         }}
-
-        /* 7. INPUT FIELD */
-        div[data-baseweb="input"], div[data-baseweb="base-input"] {{
+        div[data-baseweb="input"] {{
             background-color: #1E1E1E !important; 
             border-radius: 8px !important;
-            border: 1px solid #555555 !important;
         }}
-        
         div[data-baseweb="base-input"] input {{
             color: #FFFFFF !important; 
             -webkit-text-fill-color: #FFFFFF !important; 
-            font-weight: 500 !important;
         }}
-        
-        div[data-baseweb="base-input"] input::placeholder {{
-            color: #AAAAAA !important; 
-            -webkit-text-fill-color: #AAAAAA !important;
-            opacity: 1 !important;
-        }}
-
-        /* 8. Reset to avoid nested boxes */
-        [data-testid="stVerticalBlock"] > div {{
-            background-color: transparent !important;
-        }}
-
-        /* 9. EXPANDER FIX */
         [data-testid="stExpander"] summary {{
             background-color: #1E1E1E !important;
             border-radius: 8px !important;
             padding: 0.5rem 1rem !important;
-            border: 1px solid rgba(255,255,255,0.2) !important;
-        }}[data-testid="stExpander"] summary p,[data-testid="stExpander"] summary span {{
+        }}[data-testid="stExpander"] summary p, [data-testid="stExpander"] summary span {{
             color: #FFFFFF !important; 
             font-weight: 600 !important;
-            text-shadow: none !important;
-        }}
-
-        [data-testid="stExpander"] summary:hover {{
-            background-color: #333333 !important;
         }}
         </style>
         '''
         st.markdown(page_bg_img, unsafe_allow_html=True)
     except FileNotFoundError:
-        st.warning(f"Background image '{png_file}' not found.")
+        st.warning("Background image 'background.jpg' not found.")
 
 def create_pdf(text, title="Study Material"):
     pdf = FPDF()
@@ -152,27 +105,28 @@ def create_pdf(text, title="Study Material"):
 
 def layout():
     st.set_page_config(page_title="Study Buddy", page_icon="🎓", layout="centered")
-    
     set_background("background.jpg")
 
-    # --- SIDEBAR ---
     with st.sidebar:
         st.title("🎓 Study Tools")
         st.markdown("""
-        **Quick Commands:**
-        - `What is a Sigmoid function?`
-        - `Give me a quiz about Transformers`
-        - `Create flashcards for Regression`
+        **Subjects you can ask about:**
+        - Python
+        - Packaging in Python
+        - Pydantic AI
+        - Logistic Regression
+        - LanceDB
+        - Docker
+        - LLM
+        - Azure
         """)
-        
         st.markdown("<br><br><br>", unsafe_allow_html=True)
         st.caption("Powered by Streamlit, FastAPI & Pydantic AI")
 
-    # --- MAIN UI ---
     st.title("🎓 Study Buddy")
     st.markdown("Your interactive AI-powered learning assistant.")
     
-    user_input = st.text_input("Enter your request:", placeholder="e.g. Give me a quiz about Logistic Regression")
+    user_input = st.text_input("Enter your request:", placeholder="e.g. Generate a quiz about Logistic Regression")
 
     if st.button("🚀 Send") and user_input.strip() != "":
         try:
@@ -189,15 +143,14 @@ def layout():
                 parts = answer.rsplit("---FACIT---", 1)
                 st.markdown(parts[0].strip())
                 st.balloons()
-                with st.expander("🔍 Reveal Answer Key (Facit)"):
+                with st.expander("🔍 Reveal Answer Key"):
                     st.success(parts[1].strip())
                 pdf_data = create_pdf(answer, title="Study Quiz")
                 st.download_button("📥 Download Quiz PDF", pdf_data, "quiz.pdf", "application/pdf")
 
             elif "Q:" in answer and "|" in answer:
                 st.info("💡 Click on a question to reveal the answer!")
-                lines = answer.split('\n')
-                for line in lines:
+                for line in answer.split('\n'):
                     if "Q:" in line and "|" in line:
                         parts = line.split("|", 1)
                         if len(parts) == 2:
