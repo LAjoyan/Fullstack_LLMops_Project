@@ -3,7 +3,8 @@ FROM python:3.13-slim
 WORKDIR /app
 
 COPY backend backend
-COPY lancedb lancedb
+COPY setup setup
+COPY data data
 
 ENV PYTHONPATH=/app
 
