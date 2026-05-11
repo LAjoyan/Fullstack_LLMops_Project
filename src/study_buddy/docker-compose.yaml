@@ -6,6 +6,8 @@ services:
       dockerfile: dockerfiles/backend.dockerfile
     env_file:
       - .env
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
     image: backend:v1
     ports:
       - "8000:8000"
@@ -22,3 +24,28 @@ services:
       - backend
     environment:
       - API_URL=http://backend:8000
+
+
+  mlflow:
+    container_name: mlflow
+    image: ghcr.io/mlflow/mlflow:latest
+    ports:
+      - "5001:5000"
+    volumes:
+      - mlflow_data:/mlflow
+    command:
+      [
+        "mlflow",
+        "server",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "5000",
+        "--backend-store-uri",
+        "sqlite:////mlflow/mlflow.db",
+        "--allowed-hosts",
+        "*",
+      ]
+
+volumes:
+  mlflow_data:

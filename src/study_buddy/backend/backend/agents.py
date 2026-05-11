@@ -30,6 +30,7 @@ rag_agent = Agent(
 )
 
 @rag_agent.tool_plain
+@mlflow.trace
 def retrieve_documents(query: str, k: int = 3) -> str:
     try:
         table = vector_db["LectureTranscript"]

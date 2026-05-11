@@ -7,7 +7,8 @@ requires-python = ">=3.13"
 dependencies = [
     "backend",
     "frontend",
-    "ipykernel"
+    "ipykernel",
+    "nbconvert>=7.17.1",
 ]
 
 [tool.uv.sources]
