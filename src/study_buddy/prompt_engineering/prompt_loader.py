@@ -1,4 +1,10 @@
-# TODO: Store these prompt files in a Docker volume
+"""
+Register all prompt templates recursively from the prompt_engineering folder into MLflow.
+
+Run from the project root:
+    uv run python src/study_buddy/prompt_engineering/prompt_loader.py
+"""
+
 from backend.constants import PROMPTS_PATH
 from mlflow.genai import register_prompt
 
