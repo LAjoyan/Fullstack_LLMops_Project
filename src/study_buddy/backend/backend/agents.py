@@ -2,7 +2,6 @@ from pydantic_ai import Agent
 import lancedb
 from backend.constants import MODEL, VECTOR_DB_PATH
 from backend.data_models import RagResponse
-import re
 import mlflow
 
 vector_db = lancedb.connect(uri=VECTOR_DB_PATH)
