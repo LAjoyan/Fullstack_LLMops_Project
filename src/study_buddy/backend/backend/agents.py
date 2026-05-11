@@ -2,6 +2,7 @@ from pydantic_ai import Agent
 import lancedb
 from backend.constants import MODEL, VECTOR_DB_PATH
 from backend.data_models import RagResponse
+from mlflow.genai import load_prompt
 import mlflow
 import re
 
@@ -9,14 +10,7 @@ vector_db = lancedb.connect(uri=VECTOR_DB_PATH)
 
 rag_agent = Agent(
     model=MODEL,
-    system_prompt=(
-        "You are a helpful, intelligent study assistant. Follow these rules STRICTLY:\n"
-        "1. ALWAYS use the `retrieve_documents` tool to gather context before answering.\n"
-        "2. Answer the user's question DIRECTLY and naturally. NEVER use phrases like 'The document says...' or 'This file provides...'. Just give the factual answer.\n"
-        "3. Answer based ONLY on the retrieved context.\n"
-        "4. If the retrieved context does not contain the specific answer to the user's question (e.g., they ask for a date, but no date is in the text), DO NOT summarize the text instead. Reply exactly with: 'I cannot answer this as it is not included in my expertise.'\n"
-        "5. Extract the 'Filename' and 'Filepath' from the retrieved context and map them to the structured response. If you cannot answer, set them to 'None'."
-    ),
+    system_prompt=load_prompt("rag_agent_system_prompt"),
     output_type=RagResponse,
 )
 
