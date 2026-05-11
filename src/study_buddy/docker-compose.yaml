@@ -6,6 +6,8 @@ services:
       dockerfile: dockerfiles/backend.dockerfile
     env_file:
       - .env
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
     image: backend:v1
     ports:
       - "8000:8000"

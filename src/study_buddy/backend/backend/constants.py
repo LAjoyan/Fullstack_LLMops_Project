@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 import mlflow
 from pydantic_ai.models.openrouter import OpenRouterModel
@@ -17,8 +18,8 @@ MONITORING_PATH = ROOT_PATH / "monitoring"
 VECTOR_DB_PATH = ROOT_PATH / "lancedb"
 LLM_JUDGE = "openai:/openai/gpt-4o-mini"
 
-# Configure MLflow to use a local SQLite database for experiment tracking
-mlflow.set_tracking_uri(f"sqlite:///{MONITORING_PATH / 'mlflow.db'}")
+TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", f"sqlite:///{MONITORING_PATH / 'mlflow.db'}")
+mlflow.set_tracking_uri(TRACKING_URI)
 
 # Setting experiment in MLflow
 mlflow.set_experiment("study_buddy_bot")

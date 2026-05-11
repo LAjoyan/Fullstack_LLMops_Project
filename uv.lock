@@ -992,11 +992,15 @@ name = "frontend"
 version = "0.1.0"
 source = { editable = "src/study_buddy/frontend" }
 dependencies = [
+    { name = "httpx" },
     { name = "streamlit" },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "streamlit" }]
+requires-dist = [
+    { name = "httpx" },
+    { name = "streamlit" },
+]
 
 [[package]]
 name = "frozenlist"

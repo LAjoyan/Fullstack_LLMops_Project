@@ -3,7 +3,7 @@ import lancedb
 from backend.constants import MODEL, VECTOR_DB_PATH
 from backend.data_models import RagResponse
 import re
-
+import mlflow
 
 vector_db = lancedb.connect(uri=VECTOR_DB_PATH)
 
@@ -20,8 +20,8 @@ rag_agent = Agent(
     output_type=RagResponse,
 )
 
-
 @rag_agent.tool_plain
+@mlflow.trace
 def retrieve_documents(query: str, k: int = 3) -> str:
     results = vector_db["LectureTranscript"].search(query=query).limit(k).to_list()
 
@@ -36,8 +36,8 @@ def retrieve_documents(query: str, k: int = 3) -> str:
         for doc in results
     )
 
-
-def generate_quiz(user_query: str, k: int = 3) -> str:  
+@mlflow.trace
+def generate_quiz(user_query: str, k: int = 3) -> str:
 
     # 1. Extract number of questions (default = 5)
     match = re.search(r"\d+", user_query)
@@ -57,7 +57,7 @@ def generate_quiz(user_query: str, k: int = 3) -> str:
     # 4. Combine context
     context = "\n\n".join(
         [doc["content"][:300] for doc in results]
-    )  
+    )
 
     return f"""
 Topic: {topic}
@@ -79,7 +79,7 @@ CORRECT_ANSWER: [Just the letter A, B, C, or D]
 EXPLANATION:[Brief explanation of why the answer is correct and others are wrong]
 """
 
-
+@mlflow.trace
 def generate_flashcards(user_query: str, k: int = 1) -> str:
 
     topic = user_query.lower().replace("flashcards", "").strip()
@@ -102,7 +102,7 @@ Context:
 Task: Create flashcards (Q/A format).
 """
 
-
+@mlflow.trace
 async def bot_answer(user_prompt: str):
     try:
         response = await rag_agent.run(user_prompt)
