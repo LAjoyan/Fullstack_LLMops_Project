@@ -18,6 +18,7 @@ MONITORING_PATH = ROOT_PATH / "monitoring"
 VECTOR_DB_PATH = ROOT_PATH / "lancedb"
 LLM_JUDGE = "openai:/openai/gpt-4o-mini"
 
+mlflow.set_tracking_uri(f"sqlite:///{MONITORING_PATH / 'mlflow.db'}")
 TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", f"sqlite:///{MONITORING_PATH / 'mlflow.db'}")
 mlflow.set_tracking_uri(TRACKING_URI)
 
