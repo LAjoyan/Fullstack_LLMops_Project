@@ -1,72 +1,115 @@
-import re
-import lancedb
 from pydantic_ai import Agent
-from .data_models import RagResponse
-from .constants import MODEL, VECTOR_DB_PATH
+import lancedb
+from backend.constants import MODEL, VECTOR_DB_PATH
+from backend.data_models import RagResponse
+import mlflow
 
-# Connect to database
 vector_db = lancedb.connect(uri=VECTOR_DB_PATH)
 
-# Initialize Agent
 rag_agent = Agent(
     model=MODEL,
     system_prompt=(
-        "You are a helpful, intelligent study assistant. "
-        "Use the retrieve_documents tool to get information from lecture notes. "
-        "RULES:\n"
-        "1. For REGULAR QUESTIONS: Answer naturally. At the end, add: SOURCE_FILE: [filename].\n"
-        "2. For QUIZZES: Generate EXACTLY 5 multiple-choice questions. "
-        "YOU MUST FORMAT EVERY QUESTION EXACTLY LIKE THIS:\n\n"
-        "Question X: [The question text]\n"
-        "- A)[Option A]\n"
-        "- B) [Option B]\n"
-        "- C) [Option C]\n"
-        "- D) [Option D]\n\n"
-        "You MUST use the hyphen (-) before A, B, C, and D to force a bulleted list! "
-        "After all 5 questions, type '---FACIT---' on a new line. "
-        "After '---FACIT---', you MUST provide the correct answers for ALL 5 questions in a numbered list (1 to 5).\n"
-        "3. For FLASHCARDS: Format as 'Q: [Question] | A: [Answer]'. One card per line."
-    )
+        "You are a helpful, intelligent study assistant. Follow these rules STRICTLY:\n"
+        "1. ALWAYS use the `retrieve_documents` tool to gather context before answering.\n"
+        "2. Answer the user's question DIRECTLY and naturally. NEVER use phrases like 'The document says...' or 'This file provides...'. Just give the factual answer.\n"
+        "3. Answer based ONLY on the retrieved context.\n"
+        "4. If the retrieved context does not contain the specific answer to the user's question (e.g., they ask for a date, but no date is in the text), DO NOT summarize the text instead. Reply exactly with: 'I cannot answer this as it is not included in my expertise.'\n"
+        "5. Extract the 'Filename' and 'Filepath' from the retrieved context and map them to the structured response. If you cannot answer, set them to 'None'."
+    ),
+    output_type=RagResponse,
 )
 
 @rag_agent.tool_plain
 @mlflow.trace
 def retrieve_documents(query: str, k: int = 3) -> str:
-    try:
-        table = vector_db["LectureTranscript"]
-        results = table.search(query=query).limit(k).to_list()
-        if not results:
-            return "No documents found."
-        return "\n\n".join([f"FILE: {doc.get('document_name')}\nCONTENT: {doc['content']}" for doc in results])
-    except Exception as e:
-        return f"Error: {str(e)}"
+    results = vector_db["LectureTranscript"].search(query=query).limit(k).to_list()
 
-def generate_quiz(user_query: str) -> str:
-    topic = user_query.lower().replace("quiz", "").strip() or "the material"
-    return (
-        f"Create a 5-question quiz about {topic}. "
-        "Remember the STRICT FORMAT: Use a hyphen (-) before options A, B, C, and D. "
-        "Provide all 5 questions, then '---FACIT---', then ALL 5 answers."
+    if not results:
+        return "No documents found."
+
+    return "\n\n".join(
+        f"DOCUMENT:\n"
+        f"Filename: {doc.get('document_name', 'Unknown').replace('.md', '')}\n"
+        f"Filepath: {doc.get('filepath') or 'Not found'}\n"
+        f"Content: {doc['content'][:1000]}"
+        for doc in results
     )
 
-def generate_flashcards(user_query: str) -> str:
-    topic = user_query.lower().replace("flashcards", "").strip() or "the material"
-    return f"Create 5 flashcards for {topic} using 'Q: | A:' format."
+@mlflow.trace
+def generate_quiz(user_query: str, k: int = 3) -> str:
 
-async def bot_answer(user_prompt: str) -> RagResponse:
+    # 1. Extract number of questions (default = 5)
+    match = re.search(r"\d+", user_query)
+    num_questions = int(match.group()) if match else 5
+    num_questions = min(num_questions, 5)
+    # 2. Extract topic
+    topic = user_query.lower().replace("quiz", "").strip()
+    if not topic:
+        topic = "machine learning"  # fallback
+
+    # 3. Retrieve from LanceDB (semantic search works because of embeddings)
+    results = vector_db["LectureTranscript"].search(topic).limit(k).to_list()
+
+    if not results:
+        return "No relevant content found."
+
+    # 4. Combine context
+    context = "\n\n".join(
+        [doc["content"][:300] for doc in results]
+    )
+
+    return f"""
+Topic: {topic}
+
+Context:
+{context}
+
+Task:
+Generate 1 multiple choice question based on the context.
+
+You MUST format your response EXACTLY like this:
+QUESTION: [The question]
+A) [Option A]
+B)[Option B]
+C) [Option C]
+D) [Option D]
+---
+CORRECT_ANSWER: [Just the letter A, B, C, or D]
+EXPLANATION:[Brief explanation of why the answer is correct and others are wrong]
+"""
+
+@mlflow.trace
+def generate_flashcards(user_query: str, k: int = 1) -> str:
+
+    topic = user_query.lower().replace("flashcards", "").strip()
+    if not topic:
+        topic = "machine learning"
+
+    results = vector_db["LectureTranscript"].search(query=topic).limit(k).to_list()
+
+    if not results:
+        return "No relevant content found."
+
+    context = "\n\n".join([doc["content"][:150] for doc in results])
+
+    return f"""
+Topic: {topic}
+
+Context:
+{context}
+
+Task: Create flashcards (Q/A format).
+"""
+
+@mlflow.trace
+async def bot_answer(user_prompt: str):
     try:
-        result = await rag_agent.run(user_prompt)
-        full_text = result.data if hasattr(result, 'data') else str(result)
-        if hasattr(result, 'output'): full_text = str(result.output)
+        response = await rag_agent.run(user_prompt)
+        return response.output
 
-        # Source extraction
-        source_name = "Knowledge Base"
-        clean_answer = full_text
-        if "SOURCE_FILE:" in full_text:
-            parts = full_text.split("SOURCE_FILE:")
-            clean_answer = parts[0].strip()
-            source_name = parts[1].strip()
-
-        return RagResponse(answer=clean_answer, filename=source_name, filepath="Internal")
     except Exception as e:
-        return RagResponse(answer=f"Error: {str(e)}", filename="Error", filepath="Error")
+        return RagResponse(
+            filename="Error",
+            filepath="Error",
+            answer=f"An error occurred: {str(e)}",
+        )
