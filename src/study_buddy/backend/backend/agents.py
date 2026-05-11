@@ -10,7 +10,14 @@ vector_db = lancedb.connect(uri=VECTOR_DB_PATH)
 
 rag_agent = Agent(
     model=MODEL,
-    system_prompt=load_prompt("rag_agent_system_prompt"),
+
+    # Load the production-approved system prompt from MLflow. 
+    # Move the "@production" alias to a newer prompt version in MLflow without
+    # changing or redeploying the backend code
+    system_prompt=load_prompt(
+        "prompts:/rag_agent_system_prompt@production"
+    ),
+
     output_type=RagResponse,
 )
 
