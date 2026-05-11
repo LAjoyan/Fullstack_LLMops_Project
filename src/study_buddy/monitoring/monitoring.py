@@ -1,10 +1,10 @@
 import os
 import mlflow
-from backend.constants import LLM_JUDGE, MONITORING_PATH, bot_answer
+from backend.constants import LLM_JUDGE, MONITORING_PATH, VECTOR_DB_PATH
+from backend.agents import bot_answer
 import lancedb
 import asyncio
 import nest_asyncio
-from backend.constants import VECTOR_DB_PATH
 import requests
 import json
 from mlflow.genai import evaluate
