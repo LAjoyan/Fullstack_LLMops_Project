@@ -1,13 +1,12 @@
 import os
 from pathlib import Path
 import mlflow
-from pydantic_ai.models.openrouter import OpenRouterModel
 
 
 ROOT_PATH = Path(__file__).parents[2]
 DATA_PATH = ROOT_PATH / "data"
 
-MODEL ="openai/gpt-3.5-turbo",
+MODEL = "openrouter:meta-llama/llama-3.1-8b-instruct"
 
 EMBEDDING_MODEL = "embed-multilingual-light-v3.0"
 
