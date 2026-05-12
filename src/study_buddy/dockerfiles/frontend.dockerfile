@@ -3,7 +3,6 @@ FROM python:3.13-slim
 WORKDIR /app
 
 COPY frontend frontend
-COPY lancedb lancedb
 
 ENV PYTHONPATH=/app
 
