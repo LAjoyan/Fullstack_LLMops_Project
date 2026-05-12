@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+
+load_dotenv()
 import os
 import mlflow
 from backend.constants import LLM_JUDGE, MONITORING_PATH, VECTOR_DB_PATH
