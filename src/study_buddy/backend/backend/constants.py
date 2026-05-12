@@ -14,7 +14,7 @@ EMBEDDING_MODEL = "embed-multilingual-light-v3.0"
 PROMPTS_PATH = ROOT_PATH / "prompt_engineering"
 MONITORING_PATH = ROOT_PATH / "monitoring"
 VECTOR_DB_PATH = ROOT_PATH / "lancedb"
-LLM_JUDGE = "openai:/openai/gpt-4o-mini"
+LLM_JUDGE = "openai/gpt-4o-mini"
 
 mlflow.set_tracking_uri(f"sqlite:///{MONITORING_PATH / 'mlflow.db'}")
 TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", f"sqlite:///{MONITORING_PATH / 'mlflow.db'}")
