@@ -86,11 +86,11 @@ def relevance(inputs, outputs):
 
 @scorer
 def groundedness(inputs, outputs):
-    return judge(GROUNDEDNESS_PROMPT.format(
-        inputs=inputs["prompt"],
-        outputs=outputs,
-        context=inputs["context"]
-    ))
+    return judge(
+        GROUNDEDNESS_PROMPT.format(
+            inputs=inputs["prompt"], outputs=outputs, context=inputs["context"]
+        )
+    )
 
 
 scorers = [relevance, groundedness]
