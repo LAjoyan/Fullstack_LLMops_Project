@@ -34,9 +34,11 @@ evaluation_dataset = [
     for _, row in docs.head(2).iterrows()
 ]
 
+
 def predict_fn(prompt, context=None):
     result = asyncio.get_event_loop().run_until_complete(bot_answer(prompt))
     return result.answer
+
 
 RELEVANCE_PROMPT = """Rate from 1-5 how well the answer addresses the question.
 Question: {inputs}
@@ -69,6 +71,7 @@ def judge(prompt: str) -> int:
             "messages": [{"role": "user", "content": prompt}],
         },
     )
+    print(response.status_code, response.json())
     text = response.json()["choices"][0]["message"]["content"]
     try:
         return int(json.loads(text)["score"])
