@@ -17,13 +17,17 @@ The project focuses on practical LLMOps concepts including:
 # 📸 Screenshots
 
 ## Streamlit Frontend
-![Frontend](images/frontend.png)
+![Frontend](src/study_buddy/Screenshots/Frontend.jpg)
 
 ## Quiz Generation
-![Quiz](images/quiz.png)
+![Quiz](src/study_buddy/Screenshots/Quiz.jpg)
+
+## Flashcards Generation
+![Flashcards](src/study_buddy/Screenshots/Flashcards.jpg)
+
 
 ## MLflow Monitoring
-![MLflow](images/mlflow.png)
+![MLflow](src/study_buddy/Screenshots/MLflow.jpg)
 
 ---
 
