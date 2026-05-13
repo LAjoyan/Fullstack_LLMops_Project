@@ -208,3 +208,5 @@ __marimo__/
 
 lancedb
 vector_db/
+
+src/study_buddy/monitoring/mlflow.db

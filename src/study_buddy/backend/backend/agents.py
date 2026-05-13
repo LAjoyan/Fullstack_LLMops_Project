@@ -8,21 +8,24 @@ import re
 
 vector_db = lancedb.connect(uri=VECTOR_DB_PATH)
 
+try:
+    active_system_prompt = load_prompt("prompts:/rag_agent_system_prompt@production")
+    print("Successfully loaded system prompt from MLflow.")
+except Exception as e:
+    print(f"MLflow prompt not found, using fallback prompt. Error: {e}")
+    active_system_prompt = """You are a helpful AI teaching assistant.
+Use the provided Context to answer the user's question.
+If the context doesn't contain the exact answer, you are allowed to use your general AI knowledge to explain the concept to the student.
+
+CRITICAL INSTRUCTION: Keep your answers concise, brief, and directly to the point (maximum 2 to 3 sentences). Do not write long essays or use analogies unless asked.
+"""
+
 rag_agent = Agent(
     model=MODEL,
-
-    # Load the production-approved system prompt from MLflow. 
-    # Move the "@production" alias to a newer prompt version in MLflow without
-    # changing or redeploying the backend code
-    system_prompt=load_prompt(
-        "prompts:/rag_agent_system_prompt@production"
-    ),
-
-    output_type=RagResponse,
+    system_prompt=active_system_prompt,
+    retries=3,
 )
 
-
-@rag_agent.tool_plain
 @mlflow.trace
 def retrieve_documents(query: str, k: int = 3) -> str:
     results = vector_db["LectureTranscript"].search(query=query).limit(k).to_list()
@@ -72,7 +75,7 @@ Generate 1 multiple choice question based on the context.
 You MUST format your response EXACTLY like this:
 QUESTION: [The question]
 A) [Option A]
-B)[Option B]
+B) [Option B]
 C) [Option C]
 D) [Option D]
 ---
@@ -101,15 +104,50 @@ Topic: {topic}
 Context:
 {context}
 
-Task: Create flashcards (Q/A format).
+Task: Create 5 flashcards based on the context.
+Focus entirely on the concepts, definitions, and facts.
+
+CRITICAL INSTRUCTIONS:
+1. DO NOT mention "this video", "the transcript", "the speaker", or "this lecture". Frame every question as a general, standalone fact (e.g., ask "What is Pydantic AI?" instead of "What is the topic of the video?").
+2. You MUST format EVERY flashcard exactly like this on a single line:
+Q: [The Question] | A: [The Answer]
+3. Do not write "Card 1", do not use bullet points, and do not add an introduction. Just the Q and A separated by the pipe (|) symbol.
 """
 
 
 @mlflow.trace
 async def bot_answer(user_prompt: str):
     try:
-        response = await rag_agent.run(user_prompt)
-        return response.output
+        # 1. Manually search the database (No AI tools needed!)
+        results = vector_db["LectureTranscript"].search(query=user_prompt).limit(3).to_list()
+
+        if not results:
+            context = "No documents found."
+            source_doc = "None"
+        else:
+            # Combine the text from the top documents
+            context = "\n\n".join([doc["content"][:1000] for doc in results])
+            # Grab the filename of the very best match for the UI
+            source_doc = results[0].get('document_name', 'Unknown').replace('.md', '')
+
+        # 2. Build a clear, direct prompt for the AI
+        full_prompt = f"""
+Context:
+{context}
+
+User Question:
+{user_prompt}
+"""
+
+        # 3. Let the AI generate the answer using the text we just found
+        response = await rag_agent.run(full_prompt)
+
+        # 4. Return it nicely to the frontend!
+        return RagResponse(
+            filename=source_doc,
+            filepath="LanceDB Database",
+            answer=response.output,
+        )
 
     except Exception as e:
         return RagResponse(

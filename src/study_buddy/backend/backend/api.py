@@ -26,7 +26,7 @@ async def create_quiz(query: Prompt) -> RagResponse:
     prompt = generate_quiz(query.prompt)
     response = await rag_agent.run(prompt)
     return RagResponse(
-        filename="Quiz", filepath="Generated", answer=response.output.answer
+        filename="Quiz", filepath="Generated", answer=response.output
     )
 
 
@@ -35,5 +35,5 @@ async def create_flashcards(query: Prompt) -> RagResponse:
     prompt = generate_flashcards(query.prompt)
     response = await rag_agent.run(prompt)
     return RagResponse(
-        filename="Flashcards", filepath="Generated", answer=response.output.answer
+        filename="Flashcards", filepath="Generated", answer=response.output
     )

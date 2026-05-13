@@ -5,19 +5,21 @@ import base64
 from fpdf import FPDF
 
 # Configuration
-API_URL = os.getenv("API_URL", "http://localhost:8000/rag/query")
+API_URL = os.getenv("API_URL", "http://localhost:8000")
+
 
 def get_base64_of_bin_file(bin_file):
-    with open(bin_file, 'rb') as f:
+    with open(bin_file, "rb") as f:
         data = f.read()
     return base64.b64encode(data).decode()
+
 
 def set_background(png_file, theme):
     try:
         bin_str = get_base64_of_bin_file(png_file)
 
         # Define CSS for both light and dark themes
-        light_theme_css = f'''
+        light_theme_css = f"""
         <style>
         /* General App Style */
         .stApp {{
@@ -44,9 +46,9 @@ def set_background(png_file, theme):
             -webkit-text-fill-color: #000000 !important;
         }}
         </style>
-        '''
+        """
 
-        dark_theme_css = f'''
+        dark_theme_css = f"""
         <style>
         /* General App Style */
         .stApp {{
@@ -73,10 +75,10 @@ def set_background(png_file, theme):
             -webkit-text-fill-color: #FFFFFF !important;
         }}
         </style>
-        '''
+        """
 
         # Select and apply the theme's CSS
-        if theme == 'dark':
+        if theme == "dark":
             st.markdown(dark_theme_css, unsafe_allow_html=True)
         else:
             st.markdown(light_theme_css, unsafe_allow_html=True)
@@ -87,45 +89,42 @@ def set_background(png_file, theme):
     except FileNotFoundError:
         st.warning("Background image 'background.jpg' not found.")
 
+
 def create_pdf(text, title="Study Material"):
     pdf = FPDF()
     pdf.add_page()
-    pdf.set_font("helvetica", 'B', 16)
-    pdf.cell(0, 10, txt=title, ln=True, align='C')
+    pdf.set_font("helvetica", "B", 16)
+    pdf.cell(0, 10, txt=title, ln=True, align="C")
     pdf.ln(10)
     pdf.set_font("helvetica", size=11)
-    clean_text = text.encode('latin-1', 'ignore').decode('latin-1')
+    clean_text = text.encode("latin-1", "ignore").decode("latin-1")
     pdf.multi_cell(0, 10, txt=clean_text)
     return pdf.output(dest="S").encode("latin-1")
+
 
 def layout():
 
     st.set_page_config(page_title="Study Buddy", page_icon="🎓", layout="centered")
 
-    if 'theme' not in st.session_state:
-        st.session_state.theme = 'light'  # Default to light mode
+    if "theme" not in st.session_state:
+        st.session_state.theme = "light"  # Default to light mode
 
     set_background("background.jpg", st.session_state.theme)
 
     with st.sidebar:
         st.title("🎓 Study Tools")
-        if st.session_state.theme == 'light':
-            if st.button('🌙 Switch to Dark Mode'):
-                st.session_state.theme = 'dark'
-                st.rerun() # Use st.rerun() for newer Streamlit versions
+        if st.session_state.theme == "light":
+            if st.button("🌙 Switch to Dark Mode"):
+                st.session_state.theme = "dark"
+                st.rerun()  # Use st.rerun() for newer Streamlit versions
         else:
-            if st.button('☀️ Switch to Light Mode'):
-                st.session_state.theme = 'light'
-                st.rerun() # Use st.rerun() for newer Streamlit versions
+            if st.button("☀️ Switch to Light Mode"):
+                st.session_state.theme = "light"
+                st.rerun()  # Use st.rerun() for newer Streamlit versions
 
-        st.markdown("---") # Optional: adds a divider
+        st.markdown("---")  # Optional: adds a divider
         # --- END OF ADDED CODE BLOCK ---
 
-        st.markdown("""
-        **Subjects you can ask about:**
-        - Python
-        ...
-        """)
         st.markdown("""
         **Subjects you can ask about:**
         - Python
@@ -143,49 +142,115 @@ def layout():
     st.title("🎓 Study Buddy")
     st.markdown("Your interactive AI-powered learning assistant.")
 
-    user_input = st.text_input("Enter your request:", placeholder="e.g. Generate a quiz about Logistic Regression")
+    user_input = st.text_input(
+        "Enter your request:",
+        placeholder="e.g. Generate a quiz about Logistic Regression",
+    )
 
-    if st.button("🚀 Send") and user_input.strip() != "":
+    mode = st.selectbox("Choose Study Mode", ["Ask AI", "Quiz", "Flashcards"])
+
+    if st.button("🚀 Send"):
+        if not user_input.strip():
+            st.warning("Please enter a request.")
+            return
         try:
             with st.spinner("🧠 Thinking..."):
-                response = httpx.post(f"{API_URL}/rag/query", json={"prompt": user_input}, timeout=300.0)
-                response.raise_for_status()
-                data = response.json()
+                if mode == "Quiz":
+                    endpoint = f"{API_URL}/rag/quiz"
 
+                elif mode == "Flashcards":
+                    endpoint = f"{API_URL}/rag/flashcards"
+
+                else:
+                    endpoint = f"{API_URL}/rag/query"
+
+                response = httpx.post(
+                    endpoint, json={"prompt": user_input}, timeout=300.0
+                )
+                response.raise_for_status()
+
+                try:
+                    data = response.json()
+                except Exception:
+                    st.error("Invalid response from API")
+                    return
             answer = data.get("answer", "")
             st.markdown("---")
             st.markdown("### 🤖 Response")
 
-            if "---FACIT---" in answer:
-                parts = answer.rsplit("---FACIT---", 1)
-                st.markdown(parts[0].strip())
-                st.balloons()
+            if "---" in answer:  # <--- CHANGED FROM ---FACIT---
+                parts = answer.rsplit("---", 1)  # <--- CHANGED
+
+                # Strip out any '#' symbols so the LLM can't make the font massive
+                clean_question = parts[0].replace("#", "").replace("A)", "\n\nA)").replace("B)", "\n\nB)").replace("C)", "\n\nC)").replace("D)", "\n\nD)").strip()
+
+                st.markdown(clean_question)
+
+                # This creates the clickable arrow dropdown!
                 with st.expander("🔍 Reveal Answer Key"):
                     st.success(parts[1].strip())
+
                 pdf_data = create_pdf(answer, title="Study Quiz")
-                st.download_button("📥 Download Quiz PDF", pdf_data, "quiz.pdf", "application/pdf")
+                st.download_button(
+                    "📥 Download Quiz PDF", pdf_data, "quiz.pdf", "application/pdf"
+                )
 
             elif "Q:" in answer and "|" in answer:
-                st.info("💡 Click on a question to reveal the answer!")
-                for line in answer.split('\n'):
-                    if "Q:" in line and "|" in line:
-                        parts = line.split("|", 1)
-                        if len(parts) == 2:
-                            with st.expander(f"❓ {parts[0].replace('Q:', '').strip()}"):
-                                st.write(parts[1].replace('A:', '').strip())
+                st.info("💡 Select a card tab below to study!")
+
+                # 1. Gather all the valid flashcards
+                cards = [line for line in answer.split("\n") if "Q:" in line and "|" in line]
+
+                if cards:
+                    # 2. Create interactive Tabs (acts like a Next button carousel!)
+                    tab_titles = [f"Card {i+1}/{len(cards)}" for i in range(len(cards))]
+                    tabs = st.tabs(tab_titles)
+
+                    # 3. Fill each tab with the Question and hidden Answer
+                    for i, tab in enumerate(tabs):
+                        with tab:
+                            parts = cards[i].split("|", 1)
+
+                            # Clean up the text
+                            question = parts[0].replace("Q:", "").strip()
+                            answer_text = parts[1].replace("A:", "").strip()
+
+                            # Show Question prominently
+                            st.markdown(f"### ❓ {question}")
+
+                            # The Reveal Answer Button
+                            with st.expander("💡 Reveal Answer"):
+                                st.success(answer_text)
+
+                # PDF Download button
                 pdf_data = create_pdf(answer.replace("|", "\n"), title="Study Flashcards")
-                st.download_button("📥 Download Flashcards PDF", pdf_data, "flashcards.pdf", "application/pdf")
+                st.download_button(
+                    "📥 Download Flashcards PDF",
+                    pdf_data,
+                    "flashcards.pdf",
+                    "application/pdf",
+                )
 
             else:
-                st.markdown(answer)
+                # If it's just Ask AI, display normal text (and prevent giant headers)
+                st.markdown(answer.replace("#", ""))
                 pdf_data = create_pdf(answer, title="Study Note")
-                st.download_button("📥 Download Answer PDF", pdf_data, "answer.pdf", "application/pdf")
+                st.download_button(
+                    "📥 Download Answer PDF", pdf_data, "answer.pdf", "application/pdf"
+                )
 
             st.divider()
             st.caption(f"📂 **Source:** {data.get('filename', 'Internal Database')}")
 
+        except httpx.HTTPStatusError as e:
+            st.error(f"HTTP Error: {e}")
+
+        except httpx.RequestError as e:
+            st.error(f"Connection Error: {e}")
+
         except Exception as e:
-            st.error(f"❌ Error: {str(e)}")
+            st.error(f"Unexpected Error: {e}")
+
 
 if __name__ == "__main__":
     layout()
