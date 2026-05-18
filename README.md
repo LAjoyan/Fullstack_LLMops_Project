@@ -370,16 +370,17 @@ This project is developed collaboratively by a team of four students. Each membe
 
 # ☁️ Deployment
 
-The application is deployed on Microsoft Azure App Service.
+The application was deployed on Microsoft Azure App Service during development and testing.
 
-### Live Demo
-[Study_buddy](https://studyb-app-anffgfhaehbpgke9.italynorth-01.azurewebsites.net/)
+### Previous Live Deployment
 
-The deployed version includes:
+The deployed version included:
 
 - Streamlit frontend
 - FastAPI backend
 - Dockerized services
 - Cloud-hosted RAG pipeline
 
-The deployment was used to test the system in a production-like environment outside local development.
+The deployment was used to validate the system in a production-like environment outside local development.
+
+> Note: The Azure deployment has since been removed to avoid unnecessary usage of student Azure credits.
